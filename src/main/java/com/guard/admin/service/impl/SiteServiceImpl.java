@@ -6,6 +6,8 @@ import com.guard.admin.database.entities.HitPoints;
 import com.guard.admin.database.entities.Shift;
 import com.guard.admin.database.entities.User;
 import com.guard.admin.database.repositories.HitPointRepository;
+import com.guard.admin.database.repositories.ReportRepository;
+import com.guard.admin.database.repositories.ScheduleRepository;
 import com.guard.admin.database.repositories.ShiftRepository;
 import com.guard.admin.payload.response.DataTableResponse;
 import com.guard.admin.payload.dto.SiteWithHitpoint;
@@ -34,6 +36,12 @@ public class SiteServiceImpl implements SiteService {
 
     @Autowired
     ShiftRepository shiftRepository;
+
+    @Autowired
+    ReportRepository reportRepository;
+
+    @Autowired
+    ScheduleRepository scheduleRepository;
 
     @Override
     public SiteWithHitpoint getFull(Integer id) {
@@ -119,6 +127,8 @@ public class SiteServiceImpl implements SiteService {
         siteRepository.deleteById(id);
         hitPointRepository.deleteAllBySiteId(id);
         shiftRepository.deleteAllBySiteId(id);
+        reportRepository.deleteAllBySiteId(id);
+        scheduleRepository.deleteAllBySiteId(id);
     }
 
     @Override
