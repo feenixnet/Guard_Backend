@@ -17,4 +17,5 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Integer> {
     List<Schedule> findBySiteId(Integer siteId);
 
     void deleteAllBySiteId(Integer siteId);
+    void deleteAllByGuardId(Integer guardId);
 }

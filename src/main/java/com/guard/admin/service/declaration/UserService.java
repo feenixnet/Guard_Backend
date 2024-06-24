@@ -2,6 +2,7 @@ package com.guard.admin.service.declaration;
 
 import java.util.List;
 
+import com.google.firebase.auth.FirebaseAuthException;
 import com.guard.admin.database.entities.*;
 import com.guard.admin.payload.dto.ChatUser;
 import com.guard.admin.payload.response.DataTableResponse;
@@ -12,11 +13,11 @@ public interface UserService {
 
     User get(Integer id);
 
-    User create(User user);
+    User create(User user) throws FirebaseAuthException;
 
-    User update(Integer id, User userDetail);
+    User update(Integer id, User userDetail) throws FirebaseAuthException;
     
-    void delete(Integer id);
+    void delete(Integer id) throws FirebaseAuthException;
 
     List<User> getAreaManagers();
 

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.*;
 
 import com.guard.admin.database.repositories.*;
+import com.google.firebase.auth.FirebaseAuthException;
 import com.guard.admin.database.entities.*;
 import com.guard.admin.payload.request.GuardRequest;
 import com.guard.admin.payload.response.DataTableResponse;
@@ -19,6 +20,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class GuardServiceImpl implements GuardService {
@@ -30,10 +32,20 @@ public class GuardServiceImpl implements GuardService {
     private SiteRepository siteRepository;
 
     @Autowired
+    private ScheduleRepository scheduleRepository;
+
+    @Autowired
+    private ReportRepository reportRepository;
+
+
+    @Autowired
     private ScheduleService scheduleService;
 
     @Autowired
     PasswordEncoder encoder;
+
+    @Autowired
+    FirebaseAuthServiceImpl firebaseAuthServiceImpl;
 
     private final String uploadDir = System.getProperty("user.dir") + File.separator + "upload/public/images";
 
@@ -90,14 +102,15 @@ public class GuardServiceImpl implements GuardService {
     }
 
     @Override
-    public Guard create(GuardRequest guardRequest) throws IOException {
+    public Guard create(GuardRequest guardRequest) throws IOException, FirebaseAuthException {
         Guard guard = analyzeRequest(guardRequest);
         guardRepository.save(guard);
+        firebaseAuthServiceImpl.createUser(guardRequest.getEmail(),guardRequest.getPassword());
         return guard;
     }
 
     @Override
-    public Guard update(Integer id , GuardRequest request) throws IOException {
+    public Guard update(Integer id , GuardRequest request) throws IOException, FirebaseAuthException {
         
         Guard updateGuard = guardRepository.findById(id).get();
         updateGuard.setEmail(request.getEmail());
@@ -157,12 +170,20 @@ public class GuardServiceImpl implements GuardService {
 
         guardRepository.save(updateGuard);
 
+        firebaseAuthServiceImpl.updateGuardUser(id, request.getEmail(),request.getPassword());
+
         return updateGuard;
     }
 
     @Override
-    public void delete(Integer id) {
-        guardRepository.deleteById(id);
+    @Transactional
+    public void delete(Integer id) throws FirebaseAuthException {    
+
+        firebaseAuthServiceImpl.deleteUser(guardRepository.findById(id).get().getEmail());
+        scheduleRepository.deleteAllByGuardId(id);
+        reportRepository.deleteAllByGuardId(id);
+        guardRepository.deleteById(id);        
+
     }
 
     @Override

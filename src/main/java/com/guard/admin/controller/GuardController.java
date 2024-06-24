@@ -52,6 +52,7 @@ public class GuardController {
     public ResponseEntity<ApiResponse<?>> remove(@PathVariable Integer id) {
         try {
             UserDetailsImpl userDetails = authService.getInfo();
+            
             if (userDetails.getRole().equals(Role.admin)) {
                 guardService.delete(id);
                 return ResponseEntity.ok(new ApiResponse<>(""));

@@ -85,7 +85,7 @@ public class WebConfig implements WebMvcConfigurer {
                    .requestMatchers("/v3/**").permitAll()
 
                    .requestMatchers("/api/images/**").permitAll()
-                   // .requestMatchers("/api/test/**").permitAll()
+                   .requestMatchers("/api/guards/**").permitAll()
                    .anyRequest().authenticated()
              );
 

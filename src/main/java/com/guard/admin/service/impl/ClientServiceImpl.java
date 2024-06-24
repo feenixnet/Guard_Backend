@@ -15,6 +15,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.google.firebase.auth.FirebaseAuthException;
 import com.guard.admin.database.entities.Client;
 import com.guard.admin.database.repositories.ClientRepository;
 
@@ -27,22 +28,27 @@ public class ClientServiceImpl implements ClientService {
     @Autowired
     PasswordEncoder encoder;
 
+    @Autowired
+    FirebaseAuthServiceImpl firebaseAuthServiceImpl;
+
     @Override
     public Client get(Integer id) {
         return clientRepository.findById(id).get();
     }
 
     @Override
-    public Client create(Client client) {
+    public Client create(Client client) throws FirebaseAuthException {
         client.setPassword(encoder.encode(client.getPassword()));
         client.setRole(Role.client);
         clientRepository.save(client);
+
+        firebaseAuthServiceImpl.createUser(client.getEmail(), client.getPassword());
 
         return client;
     }
 
     @Override
-    public void update(Integer id , Client clientDetail) {
+    public void update(Integer id , Client clientDetail) throws FirebaseAuthException {
         
         Client updateClient = clientRepository.findById(id).get();
         updateClient.setAddress(clientDetail.getAddress());
@@ -54,11 +60,14 @@ public class ClientServiceImpl implements ClientService {
             updateClient.setPassword(encoder.encode(clientDetail.getPassword()));
 
         clientRepository.save(updateClient);
+
+        firebaseAuthServiceImpl.updateClientUser(id, clientDetail.getEmail(),clientDetail.getPassword());
     }
 
     @Override
-    public void delete(Integer id) {
-        clientRepository.deleteById(id);
+    public void delete(Integer id) throws FirebaseAuthException {
+        firebaseAuthServiceImpl.deleteUser(clientRepository.findById(id).get().getEmail());
+        clientRepository.deleteById(id);        
     }
 
     @Override

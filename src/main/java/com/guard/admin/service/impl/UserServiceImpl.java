@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.google.firebase.auth.FirebaseAuthException;
 import com.guard.admin.database.entities.*;
 import com.guard.admin.database.repositories.*;
 import com.guard.admin.payload.dto.ChatUser;
@@ -44,6 +45,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     PasswordEncoder encoder;
 
+    @Autowired
+    FirebaseAuthServiceImpl firebaseAuthServiceImpl;
+
     @Override
     public User getByEmail(String email) {
         return userRepository.findByEmail(email).get();
@@ -56,14 +60,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User create(User user) {
+    public User create(User user) throws FirebaseAuthException {
         user.setPassword(encoder.encode(user.getPassword()));
         userRepository.save(user);
+
+        firebaseAuthServiceImpl.createUser(user.getEmail(), user.getPassword());
         return user;
     }
 
     @Override
-    public User update(Integer id, User userDetail) {
+    public User update(Integer id, User userDetail) throws FirebaseAuthException {
         User user = userRepository.findById(id).get();
         user.setEmail(userDetail.getEmail());
         user.setAddress(userDetail.getAddress());
@@ -74,11 +80,15 @@ public class UserServiceImpl implements UserService {
         if(!userDetail.getPassword().isEmpty())
             user.setPassword(encoder.encode(userDetail.getPassword()));
         userRepository.save(user);
+
+        firebaseAuthServiceImpl.updateClientUser(id, userDetail.getEmail(), userDetail.getPassword());
         return user;
     }
 
     @Override
-    public void delete(Integer id) {
+    public void delete(Integer id) throws FirebaseAuthException {        
+
+        firebaseAuthServiceImpl.deleteUser(userRepository.findById(id).get().getEmail());
         userRepository.deleteById(id);
     }
 
