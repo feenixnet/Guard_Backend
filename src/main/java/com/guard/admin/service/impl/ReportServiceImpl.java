@@ -34,7 +34,7 @@ public class ReportServiceImpl implements ReportService {
     GuardService guardService;
 
     @Autowired
-    PhotoRepository photoRepository;
+    ReportPhotoRepository reportPhotoRepository;
 
     private static final Logger logger = LoggerFactory.getLogger(ScheduleService.class);
 
@@ -85,11 +85,10 @@ public class ReportServiceImpl implements ReportService {
             File destination = new File(uploadDir + File.separator + fileName);
             file.transferTo(destination);
 
-            Photo photo = new Photo();
-            photo.setReportId(updateReport.getId());
-            photo.setUrl(fileName);
-            photo.setTimestamp(new Date());
-            photoRepository.save(photo);
+            ReportPhoto reportPhoto = new ReportPhoto();
+            reportPhoto.setReport(reportRepository.findById(updateReport.getId()).get());
+            reportPhoto.setUrl(fileName);
+            reportPhotoRepository.save(reportPhoto);
         }
         return updateReport;
     }
@@ -120,7 +119,7 @@ public class ReportServiceImpl implements ReportService {
         {
             ReportResponse reportResponse = new ReportResponse();
             reportResponse.setReport(report);
-            List<Photo> photoList = photoRepository.findByReportId(report.getId());
+            List<ReportPhoto> photoList = reportPhotoRepository.findByReportId(report.getId());
             reportResponse.setPhotoList(photoList);
 
             reportResponses.add(reportResponse);

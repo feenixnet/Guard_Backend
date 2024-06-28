@@ -8,21 +8,19 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
 
-import java.util.Date;
 
 @Data
 @Entity
 @Table
-public class Photo {
+public class ReportPhoto {
     @Id
     @GeneratedValue
     private Integer id;
 
 
     @ManyToOne
-    @JoinColumn(name = "site_id")
-    private Site site;
+    @JoinColumn(name = "report_id")
+    private Report report;
 
     private String url;
-    private Date timestamp;
 }

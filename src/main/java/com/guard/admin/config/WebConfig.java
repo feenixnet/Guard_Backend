@@ -105,7 +105,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Bean
     public FirebaseMessaging firebaseApp() throws IOException {
         if (FirebaseApp.getApps().isEmpty()) {
-            InputStream serviceAccount = getClass().getClassLoader().getResourceAsStream("guardstudio-f3127-firebase-adminsdk-zin7m-1d5e598863.json");
+            InputStream serviceAccount = getClass().getClassLoader().getResourceAsStream("security-guard-691ff-firebase-adminsdk-qg3ny-0ed566e83c.json");
 
             if (serviceAccount == null) {
                 throw new IllegalArgumentException("Service account file not found in resources");
