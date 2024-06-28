@@ -122,6 +122,8 @@ public class ClientController {
         return ResponseEntity.badRequest().body(new ApiResponse<>("You don't have permission to do this Action"));
     }
 
+    @Operation(summary = "Get Site and Event",
+            description = "Get Site list and Latest Events for Client", tags = { "Client Management" })
     @GetMapping("/dashboard")
     public ResponseEntity<ApiResponse<?>> getDashboard() {
         UserDetailsImpl userDetails = authService.getInfo();

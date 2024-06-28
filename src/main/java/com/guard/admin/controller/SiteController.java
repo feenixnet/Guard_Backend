@@ -152,7 +152,7 @@ public class SiteController {
     }
 
     @Operation(summary = "Image Upload for site",
-            description = "Image Upload for site", tags = {"Image Upload"})
+            description = "Image Upload for site", tags = {"Site Management"})
     @PostMapping(value = "/image", consumes = { "multipart/form-data" })
     public ResponseEntity<ApiResponse<?>> addImages(
         @Parameter(description = "Files to be uploaded", required = true, content = @Content(mediaType = "application/octet-stream"))
@@ -182,7 +182,7 @@ public class SiteController {
     }
 
     @Operation(summary = "Image View",
-            description = "Can view Images For site", tags = {"Image View"})
+            description = "Can view Images For site", tags = {"Site Management"})
     @GetMapping("/images/{siteId}")
     public ResponseEntity<List<Photo>> getImages(@PathVariable Integer siteId) {
         try{
@@ -199,10 +199,11 @@ public class SiteController {
     }
 
     @Operation(summary = "Add Visitor for site",
-            description = "Add Visitor for site", tags = {"Add Visitor"})
-    @PostMapping("/visitor")
-    public ResponseEntity<ApiResponse<?>> addVisitor(@Parameter(description = "Files to be uploaded", required = true, content = @Content(mediaType = "application/octet-stream"))
-    @ModelAttribute VisitorRequest visitorRequest) {
+            description = "Add Visitor for site", tags = {"Site Management"})
+    @PostMapping(value = "/visitor", consumes = { "multipart/form-data" })
+    public ResponseEntity<ApiResponse<?>> addVisitor(
+        @Parameter(description = "Files to be uploaded", required = true, content = @Content(mediaType = "application/octet-stream"))
+        @ModelAttribute VisitorRequest visitorRequest) {
         try{
             UserDetailsImpl userDetails = authService.getInfo();
             if(userDetails.getRole().equals(Role.guard)) {
@@ -229,6 +230,8 @@ public class SiteController {
             return ResponseEntity.badRequest().body(new ApiResponse<>(e.getMessage()));}
     }
 
+    @Operation(summary = "Get visitors for site",
+            description = "Get Visitors for site", tags = {"Site Management"})
     @GetMapping("/visitors/{siteId}")
     public ResponseEntity<List<Visitor>> getVisitors(@PathVariable Integer siteId) {
         try{
