@@ -10,9 +10,12 @@ import com.guard.admin.database.repositories.SiteRepository;
 import com.guard.admin.database.repositories.VisitorRepository;
 import com.guard.admin.payload.dto.SiteWithHitpoint;
 import com.guard.admin.payload.request.FileRequest;
+import com.guard.admin.payload.request.ReportRequest;
 import com.guard.admin.payload.request.VisitorRequest;
 import com.guard.admin.service.impl.UserDetailsImpl;
 import com.guard.admin.service.declaration.AuthService;
+import com.guard.admin.service.declaration.ReportService;
+import com.guard.admin.service.declaration.ScheduleService;
 import com.guard.admin.utils.constant.Role;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -27,6 +30,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -61,6 +66,11 @@ public class SiteController {
 
     @Autowired
     VisitorRepository visitorRepository;
+
+        @Autowired
+    ReportService reportService;
+
+    private static final Logger logger = LoggerFactory.getLogger(ScheduleService.class);
 
 
     private final String uploadDir = System.getProperty("user.dir") + File.separator + "upload/public/images";
@@ -247,5 +257,53 @@ public class SiteController {
         }
     }
 
+
+    @Operation(summary = "Create Report",
+        description = "Send report for site (Guard)", tags = { "Site Management" })
+    @PostMapping("/reports")
+    public ResponseEntity<ApiResponse<?>> addReport(@RequestBody ReportRequest reportRequest) {
+        try{
+            UserDetailsImpl userDetails = authService.getInfo();
+            if(userDetails.getRole().equals(Role.guard)) {
+                return ResponseEntity.ok(new ApiResponse<>(reportService.create(reportRequest, userDetails.getId())));
+            }
+            return ResponseEntity.badRequest().body(new ApiResponse<>("You don't have permission to do this action!"));
+        } catch(Exception e) {
+            return ResponseEntity.badRequest().body(new ApiResponse<>(e.getMessage()));}
+    }
+
+    @Operation(summary = "Get Report History",
+        description = "Get Report History For the specific site ( Guard cannot get it. ) ", tags = { "Site Management" })
+    @GetMapping("/reports/{siteId}")
+    public ResponseEntity<ApiResponse<?>> getReports(
+        @PathVariable Integer siteId
+        , @RequestParam Integer pageNum
+        , @RequestParam Integer pageSize
+        , @RequestParam(required = false) Date startDate
+        , @RequestParam(required = false) Date endDate
+    ) {
+        UserDetailsImpl userDetails = authService.getInfo();
+        if(userDetails.getRole().equals(Role.admin))
+        {
+            return ResponseEntity.ok(new ApiResponse<>(reportService.getPage(siteId, null, pageNum, pageSize, startDate, endDate)));
+        }
+        else if(userDetails.getRole().equals(Role.client))
+        {
+            Integer clientId = userDetails.getId();
+            if(clientId == siteRepository.findById(siteId).get().getClient().getId())
+            {
+                return ResponseEntity.ok(new ApiResponse<>(reportService.getPage(siteId, null, pageNum, pageSize, startDate, endDate)));
+            }
+        }
+        // if(!userDetails.getRole().equals(Role.guard)) {
+            // if(siteId != null)
+                // return ResponseEntity.ok(new ApiResponse<>(reportService.getPage(siteId, null, pageNum, pageSize, startDate, endDate)));
+        //     else if(userDetails.getRole().equals(Role.admin))
+        //         return ResponseEntity.ok(new ApiResponse<>(reportService.getPage(null, null, pageNum, pageSize, startDate, endDate)));
+        //     else
+        //         return ResponseEntity.ok(new ApiResponse<>(reportService.getPage(null, userDetails.getId(),pageNum, pageSize, startDate, endDate)));
+        // }
+        return ResponseEntity.badRequest().body(new ApiResponse<>("You don't have permission to do this Action!"));
+    }
 
 }

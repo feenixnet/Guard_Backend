@@ -32,11 +32,8 @@ public class ReportController {
 
     @Operation(summary = "Create Report",
             description = "Send report to the server (Guard)", tags = { "Report Management" })
-    @PostMapping(value = "/", consumes = { "multipart/form-data" })
-    public ResponseEntity<ApiResponse<?>> addReport(
-            @Parameter(description = "Files to be uploaded", required = true, content = @Content(mediaType = "application/octet-stream"))
-            @ModelAttribute ReportRequest reportRequest
-    ) {
+    @PostMapping("/")
+    public ResponseEntity<ApiResponse<?>> addReport(@RequestBody ReportRequest reportRequest) {
         try{
             UserDetailsImpl userDetails = authService.getInfo();
             logger.info(userDetails.getRole());

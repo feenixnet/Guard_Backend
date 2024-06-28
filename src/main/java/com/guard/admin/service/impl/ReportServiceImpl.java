@@ -79,15 +79,11 @@ public class ReportServiceImpl implements ReportService {
 //            notificationService.sendMessage(token.getToken(), report.getNature(), report.getDescription());
 //        }
 
-        for(MultipartFile file: reportRequest.getImage())
-        {
-            String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
-            File destination = new File(uploadDir + File.separator + fileName);
-            file.transferTo(destination);
-
+        for(String url: reportRequest.getUrls())
+        { 
             ReportPhoto reportPhoto = new ReportPhoto();
             reportPhoto.setReport(reportRepository.findById(updateReport.getId()).get());
-            reportPhoto.setUrl(fileName);
+            reportPhoto.setUrl(url);
             reportPhotoRepository.save(reportPhoto);
         }
         return updateReport;
