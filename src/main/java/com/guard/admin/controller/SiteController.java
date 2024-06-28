@@ -201,7 +201,8 @@ public class SiteController {
     @Operation(summary = "Add Visitor for site",
             description = "Add Visitor for site", tags = {"Add Visitor"})
     @PostMapping("/visitor")
-    public ResponseEntity<ApiResponse<?>> addVisitor(@RequestBody VisitorRequest visitorRequest) {
+    public ResponseEntity<ApiResponse<?>> addVisitor(@Parameter(description = "Files to be uploaded", required = true, content = @Content(mediaType = "application/octet-stream"))
+    @ModelAttribute VisitorRequest visitorRequest) {
         try{
             UserDetailsImpl userDetails = authService.getInfo();
             if(userDetails.getRole().equals(Role.guard)) {
@@ -213,7 +214,11 @@ public class SiteController {
                 visitor.setLicenseplate(visitorRequest.getLicenseplate());
                 visitor.setReason(visitorRequest.getReason());
                 visitor.setGuard(guardRepository.findById(userDetails.getId()).get());
-                visitor.setUrl(visitorRequest.getUrl());
+                
+                String fileName = System.currentTimeMillis() + "_" + visitorRequest.getImage().getOriginalFilename();
+                File destination = new File(uploadDir + File.separator + fileName);
+                visitorRequest.getImage().transferTo(destination);
+                visitor.setUrl(fileName);
                 visitor.setTimestamp(new Date());
                 visitorRepository.save(visitor);
                 return ResponseEntity.ok(new ApiResponse<>("ok"));

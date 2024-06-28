@@ -2,6 +2,8 @@ package com.guard.admin.payload.request;
 
 import java.util.Date;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,6 +17,6 @@ public class VisitorRequest {
     private String phonenumber;
     private String licenseplate;
     private String reason;
-    private String url;
+    private MultipartFile image;
     private Date timestamp;
 }
