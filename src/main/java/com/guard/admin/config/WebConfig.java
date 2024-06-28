@@ -113,6 +113,7 @@ public class WebConfig implements WebMvcConfigurer {
 
             FirebaseOptions options = FirebaseOptions.builder()
                     .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+                    .setDatabaseUrl("https://security-guard-691ff-default-rtdb.firebaseio.com")
                     .build();
 
             FirebaseApp app = FirebaseApp.initializeApp(options);
