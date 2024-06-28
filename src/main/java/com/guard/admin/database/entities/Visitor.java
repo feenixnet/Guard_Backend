@@ -1,3 +1,4 @@
+
 package com.guard.admin.database.entities;
 
 import jakarta.persistence.Entity;
@@ -13,7 +14,7 @@ import java.util.Date;
 @Data
 @Entity
 @Table
-public class Photo {
+public class Visitor {
     @Id
     @GeneratedValue
     private Integer id;
@@ -27,6 +28,10 @@ public class Photo {
     @JoinColumn(name = "guard_id")
     private Guard guard;
 
-    private String url;
+    private String fullname;
+    private String company;
+    private String phonenumber;
+    private String licenseplate;
+    private String reason;
     private Date timestamp;
 }

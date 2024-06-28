@@ -2,6 +2,7 @@ package com.guard.admin.service.declaration;
 
 import java.util.*;
 
+import com.guard.admin.database.entities.Guard;
 import com.guard.admin.database.entities.HitPoints;
 import com.guard.admin.database.entities.Shift;
 import com.guard.admin.payload.response.DataTableResponse;
