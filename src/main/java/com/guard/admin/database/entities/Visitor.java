@@ -33,5 +33,6 @@ public class Visitor {
     private String phonenumber;
     private String licenseplate;
     private String reason;
+    private String url;
     private Date timestamp;
 }

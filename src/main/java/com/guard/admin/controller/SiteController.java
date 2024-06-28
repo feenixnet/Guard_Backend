@@ -213,6 +213,7 @@ public class SiteController {
                 visitor.setLicenseplate(visitorRequest.getLicenseplate());
                 visitor.setReason(visitorRequest.getReason());
                 visitor.setGuard(guardRepository.findById(userDetails.getId()).get());
+                visitor.setUrl(visitorRequest.getUrl());
                 visitor.setTimestamp(new Date());
                 visitorRepository.save(visitor);
                 return ResponseEntity.ok(new ApiResponse<>("ok"));
