@@ -1,6 +1,7 @@
 package com.guard.admin.controller;
 
 import com.guard.admin.payload.response.ApiResponse;
+import com.guard.admin.payload.response.ReportResponse;
 import com.guard.admin.database.entities.Client;
 import com.guard.admin.database.entities.Photo;
 import com.guard.admin.database.entities.Visitor;
@@ -275,7 +276,7 @@ public class SiteController {
     @Operation(summary = "Get Report History",
         description = "Get Report History For the specific site ( Guard cannot get it. ) ", tags = { "Site Management" })
     @GetMapping("/reports/{siteId}")
-    public ResponseEntity<ApiResponse<?>> getReports(
+    public ResponseEntity<ApiResponse<List<ReportResponse>>> getReports(
         @PathVariable Integer siteId
         , @RequestParam Integer pageNum
         , @RequestParam Integer pageSize
