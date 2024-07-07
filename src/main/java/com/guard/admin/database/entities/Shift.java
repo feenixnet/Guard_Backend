@@ -1,5 +1,7 @@
 package com.guard.admin.database.entities;
 
+import java.util.List;
+
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -19,4 +21,5 @@ public class Shift {
     private Integer count;
     private Double frequency;
     private Boolean status;
+    private String announces;
 }

@@ -86,7 +86,7 @@ public class SiteServiceImpl implements SiteService {
         updateSite.setLng(siteDetail.getLng());
         updateSite.setRadius(siteDetail.getRadius());
         updateSite.setStatus(siteDetail.getStatus());
-
+        updateSite.setRule(siteDetail.getRule());
         siteRepository.save(updateSite);
 
         hitPointRepository.deleteAllBySiteId(id);

@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -45,9 +46,12 @@ public class EventController {
             @RequestParam(required = false) Integer siteId,
             @RequestParam Integer pageNum,
             @RequestParam Integer pageSize,
-            @RequestParam(required = false) Date startDate,
-            @RequestParam(required = false) Date endDate
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate 
     ) {
+        System.out.println(startDate);
+        System.out.println(endDate);
+
         UserDetailsImpl userDetails = authService.getInfo();
         if(!userDetails.getRole().equals(Role.guard)) {
             if(siteId != null)

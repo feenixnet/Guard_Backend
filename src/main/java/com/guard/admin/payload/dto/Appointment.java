@@ -4,6 +4,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.List;
+
+import com.mysql.cj.x.protobuf.MysqlxDatatypes.Array;
 
 @Getter
 @Setter
@@ -15,4 +18,5 @@ public class Appointment {
     private Integer guardId;
     private Integer hours;
     private Double frequency;
+    private String announces;
 }
