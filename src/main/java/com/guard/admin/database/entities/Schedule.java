@@ -28,4 +28,5 @@ public class Schedule {
     private Integer hours;
     private Double frequency;
     private String rule;
+    private String announces;
 }

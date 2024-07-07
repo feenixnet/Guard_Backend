@@ -69,21 +69,18 @@ public class ScheduleServiceImpl implements ScheduleService {
             schedule.setGuard(guard);
             schedule.setHours(appointment.getHours());
             schedule.setFrequency(appointment.getFrequency());
+            schedule.setAnnounces(appointment.getAnnounces());
 
             scheduleRepository.save(schedule);
         }
-
+        logger.info(scheduleData.getAppointmentList().get(0).getAnnounces());
         return scheduleData;
     }
 
     @Override
     public List<Schedule> findAll() {
+        logger.info(scheduleRepository.findAll().get(0).getAnnounces());
         return scheduleRepository.findAll();
-    }
-
-    @Override
-    public List<Schedule> planForManager(String role, Integer siteId) {
-        return scheduleRepository.findBySiteId(siteId);
     }
 
     @Override
@@ -113,6 +110,12 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
+    public List<Schedule> planForManager(String role, Integer siteId) {
+        logger.info(scheduleRepository.findBySiteId(siteId).get(0).getAnnounces());
+        return scheduleRepository.findBySiteId(siteId);
+    }
+
+    @Override
     public List<ScheduleWithSiteHitPoints> planForGuard(Integer guardId, Date startTime, Date endTime) {
         Date date = new Date();
 //        List<Schedule> scheduleList = scheduleRepository.findByGuardIdAndStartTimeAfter(guardId, getStartOfDay(date));
@@ -120,6 +123,10 @@ public class ScheduleServiceImpl implements ScheduleService {
         List<Schedule> scheduleList = scheduleRepository.findByGuardIdAndStartTimeBetween(guardId, startTime, endTime);
         List<ScheduleWithSiteHitPoints> scheduleData = new ArrayList<>();
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        System.out.println("planForGurad");
+        System.out.println(scheduleList.size());
+
         for (Schedule schedule : scheduleList) {
             ScheduleWithSiteHitPoints scheduleWithSiteHitPoints = new ScheduleWithSiteHitPoints();
 
@@ -130,6 +137,9 @@ public class ScheduleServiceImpl implements ScheduleService {
             scheduleWithSiteHitPoints.setRule(schedule.getRule());
             scheduleWithSiteHitPoints.setSite(schedule.getSite());
             scheduleWithSiteHitPoints.setHitPoints(siteService.getFull(schedule.getSite().getId()).getHitPointsList());
+            scheduleWithSiteHitPoints.setAnnounces(schedule.getAnnounces());
+
+            logger.info("AAAA" + schedule.getAnnounces());
 //            scheduleWithSiteHitPoints.setShifts(siteService.getSite(schedule.getSite().getId()).getShiftList());
 
             scheduleData.add(scheduleWithSiteHitPoints);
