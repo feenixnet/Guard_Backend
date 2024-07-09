@@ -35,13 +35,19 @@ public class ProjectController {
             , @RequestParam(required = false) Date startTime
             , @RequestParam(required = false) Date endTime
             ) {
+        System.out.println("Hello");
         UserDetailsImpl userDetails = authService.getInfo();
 
         if(userDetails.getRole().equals(Role.admin) || userDetails.getRole().equals(Role.branch) || userDetails.getRole().equals(Role.area)) {
+            System.out.println("OKDDDD");
+            System.out.println(siteId);
             List<Appointment> appointmentList = new ArrayList<>();
             List<Schedule> scheduleList = new ArrayList<>();
-            if(siteId != null)
+            if(siteId != null){
+                System.out.println("Heldfjdifndifdsdf");
                 scheduleList = scheduleService.planForManager(userDetails.getRole(), siteId);
+            }
+                
             else {
                 if(userDetails.getRole().equals(Role.admin))
                     scheduleList = scheduleService.findAll();
@@ -57,6 +63,7 @@ public class ProjectController {
                 appointment.setGuardId(schedule.getGuard().getId());
                 appointment.setFrequency(schedule.getFrequency());
                 appointment.setHours(schedule.getHours());
+                appointment.setAnnounces(schedule.getAnnounces());
                 appointmentList.add(appointment);
             }
             return ResponseEntity.ok(new ApiResponse<>(appointmentList));

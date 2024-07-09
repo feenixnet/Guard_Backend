@@ -19,6 +19,7 @@ public class ScheduleWithSiteHitPoints {
     private String rule;
     private Site site;
     private List<HitPoints> hitPoints;
+    private String announces;
 
     public ScheduleWithSiteHitPoints() {
 
