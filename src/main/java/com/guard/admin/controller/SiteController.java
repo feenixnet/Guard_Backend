@@ -1,7 +1,9 @@
 package com.guard.admin.controller;
 
 import com.guard.admin.payload.response.ApiResponse;
+import com.guard.admin.payload.response.PhotoResponse;
 import com.guard.admin.payload.response.ReportResponse;
+import com.guard.admin.payload.response.VisitorResponse;
 import com.guard.admin.database.entities.Client;
 import com.guard.admin.database.entities.Photo;
 import com.guard.admin.database.entities.Visitor;
@@ -15,6 +17,7 @@ import com.guard.admin.payload.request.ReportRequest;
 import com.guard.admin.payload.request.VisitorRequest;
 import com.guard.admin.service.impl.UserDetailsImpl;
 import com.guard.admin.service.declaration.AuthService;
+import com.guard.admin.service.declaration.PhotoService;
 import com.guard.admin.service.declaration.ReportService;
 import com.guard.admin.service.declaration.ScheduleService;
 import com.guard.admin.utils.constant.Role;
@@ -34,6 +37,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -43,6 +48,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.guard.admin.service.declaration.SiteService;
+import com.guard.admin.service.declaration.VisitorService;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -68,8 +74,14 @@ public class SiteController {
     @Autowired
     VisitorRepository visitorRepository;
 
-        @Autowired
+    @Autowired
     ReportService reportService;
+
+    @Autowired
+    VisitorService visitorService;
+
+    @Autowired
+    PhotoService photoService;
 
     private static final Logger logger = LoggerFactory.getLogger(ScheduleService.class);
 
@@ -244,18 +256,53 @@ public class SiteController {
     @Operation(summary = "Get visitors for site",
             description = "Get Visitors for site", tags = {"Site Management"})
     @GetMapping("/visitors/{siteId}")
-    public ResponseEntity<List<Visitor>> getVisitors(@PathVariable Integer siteId) {
-        try{
-            // UserDetailsImpl userDetails = authService.getInfo();
-            List<Visitor> visitorList = visitorRepository.findBySiteId(siteId);   
-            for(Visitor visitor : visitorList){
-                visitor.setSite(null);
-            }         
-            return new ResponseEntity<>(visitorList, HttpStatus.OK);
-        } catch(Exception e) {
-            System.out.println(e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
+    public ResponseEntity<ApiResponse<List<VisitorResponse>>> getVisitors(
+        @PathVariable Integer siteId
+        , @RequestParam Integer pageNum
+        , @RequestParam Integer pageSize
+        , @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate
+        , @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate 
+    ) {
+        return ResponseEntity
+                .ok(new ApiResponse<>(visitorService.getPage(siteId, null, pageNum, pageSize, startDate, endDate)));
+
+        // try{
+        //     // UserDetailsImpl userDetails = authService.getInfo();
+        //     List<Visitor> visitorList = visitorRepository.findBySiteId(siteId);   
+        //     for(Visitor visitor : visitorList){
+        //         visitor.setSite(null);
+        //     }         
+        //     return new ResponseEntity<>(visitorList, HttpStatus.OK);
+        // } catch(Exception e) {
+        //     System.out.println(e);
+        //     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        // }
+    }
+    
+     @Operation(summary = "Get photos for site",
+            description = "Get Photos for site", tags = {"Site Management"})
+    @GetMapping("/photos/{siteId}")
+    public ResponseEntity<ApiResponse<List<PhotoResponse>>> getPhotos(
+        @PathVariable Integer siteId
+        , @RequestParam Integer pageNum
+        , @RequestParam Integer pageSize
+        , @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate
+        , @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate 
+    ) {
+        return ResponseEntity
+                .ok(new ApiResponse<>(photoService.getPage(siteId, null, pageNum, pageSize, startDate, endDate)));
+        
+        // try{
+        //     // UserDetailsImpl userDetails = authService.getInfo();
+        //     List<Visitor> visitorList = visitorRepository.findBySiteId(siteId);   
+        //     for(Visitor visitor : visitorList){
+        //         visitor.setSite(null);
+        //     }         
+        //     return new ResponseEntity<>(visitorList, HttpStatus.OK);
+        // } catch(Exception e) {
+        //     System.out.println(e);
+        //     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        // }
     }
 
 
@@ -280,8 +327,8 @@ public class SiteController {
         @PathVariable Integer siteId
         , @RequestParam Integer pageNum
         , @RequestParam Integer pageSize
-        , @RequestParam(required = false) Date startDate
-        , @RequestParam(required = false) Date endDate
+        , @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate
+        , @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate 
     ) {
         UserDetailsImpl userDetails = authService.getInfo();
         if(userDetails.getRole().equals(Role.admin))
