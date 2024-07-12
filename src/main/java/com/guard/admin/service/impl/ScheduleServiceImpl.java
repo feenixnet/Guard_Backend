@@ -55,7 +55,6 @@ public class ScheduleServiceImpl implements ScheduleService {
 
         Site site = siteService.getSite(scheduleData.getSiteId());
 
-        logger.info(scheduleData.getAppointmentList().get(0).getStartDate().toString());
         for(Appointment appointment : scheduleData.getAppointmentList()) {
             Instant utcDateTime = appointment.getStartDate().toInstant();
             ZoneId zoneId = ZoneId.of(ZoneId.systemDefault().toString());
@@ -73,13 +72,11 @@ public class ScheduleServiceImpl implements ScheduleService {
 
             scheduleRepository.save(schedule);
         }
-        logger.info(scheduleData.getAppointmentList().get(0).getAnnounces());
         return scheduleData;
     }
 
     @Override
     public List<Schedule> findAll() {
-        logger.info(scheduleRepository.findAll().get(0).getAnnounces());
         return scheduleRepository.findAll();
     }
 
@@ -111,7 +108,6 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     public List<Schedule> planForManager(String role, Integer siteId) {
-        logger.info(scheduleRepository.findBySiteId(siteId).get(0).getAnnounces());
         return scheduleRepository.findBySiteId(siteId);
     }
 
@@ -139,7 +135,6 @@ public class ScheduleServiceImpl implements ScheduleService {
             scheduleWithSiteHitPoints.setHitPoints(siteService.getFull(schedule.getSite().getId()).getHitPointsList());
             scheduleWithSiteHitPoints.setAnnounces(schedule.getAnnounces());
 
-            logger.info("AAAA" + schedule.getAnnounces());
 //            scheduleWithSiteHitPoints.setShifts(siteService.getSite(schedule.getSite().getId()).getShiftList());
 
             scheduleData.add(scheduleWithSiteHitPoints);
