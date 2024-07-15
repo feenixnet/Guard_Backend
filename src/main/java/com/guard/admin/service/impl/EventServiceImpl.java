@@ -44,6 +44,7 @@ public class EventServiceImpl implements EventService {
                         .map(Site::getId)
                         .toList();
                 predicates.add(root.get("siteId").in(siteIds));
+                predicates.add(root.get("site").in(siteList));
             }
             if (siteId != null)
                 predicates.add(criteriaBuilder.equal(root.get("siteId"), siteId));

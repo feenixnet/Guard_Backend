@@ -38,13 +38,12 @@ public class ProjectController {
         System.out.println("Hello");
         UserDetailsImpl userDetails = authService.getInfo();
 
-        if(userDetails.getRole().equals(Role.admin) || userDetails.getRole().equals(Role.branch) || userDetails.getRole().equals(Role.area)) {
+        if(userDetails.getRole().equals(Role.admin) || userDetails.getRole().equals(Role.client) || userDetails.getRole().equals(Role.branch) || userDetails.getRole().equals(Role.area)) {
             System.out.println("OKDDDD");
             System.out.println(siteId);
             List<Appointment> appointmentList = new ArrayList<>();
             List<Schedule> scheduleList = new ArrayList<>();
             if(siteId != null){
-                System.out.println("Heldfjdifndifdsdf");
                 scheduleList = scheduleService.planForManager(userDetails.getRole(), siteId);
             }
                 
@@ -81,7 +80,7 @@ public class ProjectController {
     public ResponseEntity<ApiResponse<?>> save(@RequestBody ScheduleData scheduleData) {
         UserDetailsImpl userDetails = authService.getInfo();
         try {
-            if (userDetails.getRole().equals(Role.admin) || userDetails.getRole().equals(Role.branch) || userDetails.getRole().equals(Role.area)){
+            if (userDetails.getRole().equals(Role.admin) || userDetails.getRole().equals(Role.client) || userDetails.getRole().equals(Role.branch) || userDetails.getRole().equals(Role.area)){
                 return ResponseEntity.ok(new ApiResponse<>(scheduleService.save(scheduleData)));
             }
             return ResponseEntity.badRequest().body(new ApiResponse<>("You don't have permission to do this action!"));
