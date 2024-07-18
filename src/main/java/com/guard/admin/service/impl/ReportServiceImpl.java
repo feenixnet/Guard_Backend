@@ -55,6 +55,9 @@ public class ReportServiceImpl implements ReportService {
         report.setNature(reportRequest.getNature());
         report.setDescription(reportRequest.getDescription());
         report.setTimestamp(new Date());
+        report.setOtherInvolved(reportRequest.getOtherInvolved());
+        report.setPoliceCaseNumber(reportRequest.getPoliceCaseNumber());
+        report.setPoliceOfficerContactDetails(reportRequest.getPoliceOfficerContactDetails());
         Report updateReport = reportRepository.save(report);
 
 //        List<Token> tokenList = tokenRepository.findAll();
