@@ -12,4 +12,6 @@ import java.util.List;
 public interface VisitorRepository extends JpaRepository<Visitor, Integer> {
     List<Visitor> findBySiteId(Integer siteId);
     Page<Visitor> findAll(Specification<Visitor> spec, Pageable pageable);
+
+    void deleteAllBySiteId(Integer siteId);
 }

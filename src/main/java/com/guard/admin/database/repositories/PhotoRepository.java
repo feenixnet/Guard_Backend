@@ -11,4 +11,5 @@ public interface PhotoRepository extends JpaRepository<Photo, Integer> {
     List<Photo> findBySiteId(Integer siteId);
     Page<Photo> findAll(Specification<Photo> spec, Pageable pageable);
 
+    void deleteAllBySiteId(Integer siteId);
 }
