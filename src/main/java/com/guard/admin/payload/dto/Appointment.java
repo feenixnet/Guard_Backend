@@ -8,9 +8,15 @@ import java.util.List;
 
 import com.mysql.cj.x.protobuf.MysqlxDatatypes.Array;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.*;
+
 @Getter
 @Setter
 public class Appointment {
+    private Integer id;
     private String text;
     private String description;
     private Date startDate;

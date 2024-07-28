@@ -298,6 +298,7 @@ public class SiteController {
         try{
             UserDetailsImpl userDetails = authService.getInfo();
             if(userDetails.getRole().equals(Role.guard)) {
+                System.out.println(reportRequest.getPoliceCaseNumber());
                 return ResponseEntity.ok(new ApiResponse<>(reportService.create(reportRequest, userDetails.getId())));
             }
             return ResponseEntity.badRequest().body(new ApiResponse<>("You don't have permission to do this action!"));

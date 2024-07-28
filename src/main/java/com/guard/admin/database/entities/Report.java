@@ -25,4 +25,7 @@ public class Report {
     private String nature;
     private String description;
     private Date timestamp;
+    private Boolean otherInvolved;
+    private String policeCaseNumber;
+    private String policeOfficerContactDetails;
 }
