@@ -22,7 +22,7 @@ import java.util.List;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("api/schedule")
-public class ProjectController {
+public class ScheduleController {
     @Autowired
     ScheduleService scheduleService;
 

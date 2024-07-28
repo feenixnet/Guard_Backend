@@ -4,7 +4,6 @@ import com.guard.admin.payload.response.ApiResponse;
 import com.guard.admin.payload.response.PhotoResponse;
 import com.guard.admin.payload.response.ReportResponse;
 import com.guard.admin.payload.response.VisitorResponse;
-import com.guard.admin.database.entities.Client;
 import com.guard.admin.database.entities.Photo;
 import com.guard.admin.database.entities.Visitor;
 import com.guard.admin.database.repositories.GuardRepository;
@@ -19,31 +18,19 @@ import com.guard.admin.service.impl.UserDetailsImpl;
 import com.guard.admin.service.declaration.AuthService;
 import com.guard.admin.service.declaration.PhotoService;
 import com.guard.admin.service.declaration.ReportService;
-import com.guard.admin.service.declaration.ScheduleService;
 import com.guard.admin.utils.constant.Role;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.method.P;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -82,8 +69,6 @@ public class SiteController {
 
     @Autowired
     PhotoService photoService;
-
-    private static final Logger logger = LoggerFactory.getLogger(ScheduleService.class);
 
 
     private final String uploadDir = System.getProperty("user.dir") + File.separator + "upload/public/images";
