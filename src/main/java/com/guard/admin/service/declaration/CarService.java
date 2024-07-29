@@ -6,6 +6,7 @@ import com.guard.admin.payload.response.DataTableResponse;
 
 
 import com.guard.admin.database.entities.Car;
+import com.guard.admin.database.entities.Site;
 
 public interface CarService {
     Car get(Integer id);
@@ -19,4 +20,6 @@ public interface CarService {
     List<Car> getAll();
 
     DataTableResponse<Car> getPage(Integer pageNumber, Integer pageSize, String searchKeyword);
+
+    List<Site> getSites(Integer carId);
 }

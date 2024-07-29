@@ -11,7 +11,9 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.guard.admin.database.entities.Car;
+import com.guard.admin.database.entities.Site;
 import com.guard.admin.database.repositories.CarRepository;
+import com.guard.admin.database.repositories.SiteRepository;
 import com.guard.admin.service.declaration.CarService;
 
 import jakarta.persistence.criteria.Predicate;
@@ -23,19 +25,21 @@ public class CarServiceImpl implements CarService{
 
     @Autowired
     CarRepository carRepository;
-
+    SiteRepository siteRepository;
 
     @Override
     public Car get(Integer id)
     {
         return carRepository.findById(id).get();
     }
-    
+
+    @Override
     public Car create(Car client)
     {
         return carRepository.save(client);
     }
 
+    @Override
     public void update(Integer id , Car carDetail)
     {
         Car carOriginal = carRepository.findById(id).get();
@@ -47,16 +51,19 @@ public class CarServiceImpl implements CarService{
         carRepository.save(carOriginal);
     }
 
+    @Override
     public void delete(Integer id)
     {
         carRepository.deleteById(id);
     }
 
+    @Override
     public List<Car> getAll()
     {
         return carRepository.findAll();
     }
 
+    @Override
     public DataTableResponse<Car> getPage(Integer pageNumber, Integer pageSize, String searchKeyword)
     {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
@@ -88,5 +95,11 @@ public class CarServiceImpl implements CarService{
         intpageFiltered = (int) pagefiltered;
 
         return new DataTableResponse<>(1 , (int)carRepository.count() , intpageFiltered , data , "name");
+    }
+    
+    @Override
+    public List<Site> getSites(Integer carId)
+    {
+        return siteRepository.findAllByCarId(carId);
     }
 }

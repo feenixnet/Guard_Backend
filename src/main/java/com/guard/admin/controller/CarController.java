@@ -26,6 +26,15 @@ public class CarController {
 
     @Autowired
     CarService carService;
+    @Operation(summary = "Get Car by id",
+            description = "Get Car on the web application", tags = { "Car Management" })
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<?>> get(@PathVariable Integer id) {
+        UserDetailsImpl userDetails = authService.getInfo();
+        if(userDetails.getRole().equals(Role.admin) || userDetails.getRole().equals(Role.branch))
+            return ResponseEntity.ok(new ApiResponse<>(carService.get(id)));
+        return ResponseEntity.badRequest().body(new ApiResponse<>("You don't have permission to do this Action"));
+    }
 
     @Operation(summary = "Create Car",
             description = "Create a new Car(Admin and Branch Manager) ", tags = { "Car Management" })
@@ -40,21 +49,6 @@ public class CarController {
         } catch(Exception e) {
             return ResponseEntity.badRequest().body(new ApiResponse<>(e.getMessage()));
         }
-    }
-
-    @Operation(summary = "Delete Car",
-            description = "Delete the Car from the Car List (Admin, Branch manager)", tags = { "Car Management" })
-    @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<?>> delete(@PathVariable Integer id) {
-        try{
-            UserDetailsImpl userDetails = authService.getInfo();
-            if(userDetails.getRole().equals(Role.admin) || userDetails.getRole().equals(Role.branch)) {
-                carService.delete(id);
-                return ResponseEntity.ok(new ApiResponse<>(""));
-            }
-            return ResponseEntity.badRequest().body(new ApiResponse<>("You don't have permission to do this action!"));
-        } catch(Exception e) {
-            return ResponseEntity.badRequest().body(new ApiResponse<>(e.getMessage()));}
     }
 
     @Operation(summary = "Update Car",
@@ -72,10 +66,26 @@ public class CarController {
             return ResponseEntity.badRequest().body(new ApiResponse<>(e.getMessage()));}
     }
 
+    @Operation(summary = "Delete Car",
+            description = "Delete the Car from the Car List (Admin, Branch manager)", tags = { "Car Management" })
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<?>> delete(@PathVariable Integer id) {
+        try{
+            UserDetailsImpl userDetails = authService.getInfo();
+            if(userDetails.getRole().equals(Role.admin) || userDetails.getRole().equals(Role.branch)) {
+                carService.delete(id);
+                return ResponseEntity.ok(new ApiResponse<>(""));
+            }
+            return ResponseEntity.badRequest().body(new ApiResponse<>("You don't have permission to do this action!"));
+        } catch(Exception e) {
+            return ResponseEntity.badRequest().body(new ApiResponse<>(e.getMessage()));}
+    }
+
+    
     @Operation(summary = "Get all car list.",
             description = "Get car list on the web application", tags = { "Car Management" })
     @GetMapping("/")
-    public ResponseEntity<ApiResponse<?>> get(
+    public ResponseEntity<ApiResponse<?>> getCars(
               @RequestParam(required = false) Integer pageNum
             , @RequestParam(required = false) Integer pageLength
             , @RequestParam(required = false) String search
@@ -92,14 +102,13 @@ public class CarController {
         return ResponseEntity.badRequest().body(new ApiResponse<>("You don't have permission to do this Action"));
     }
 
-    @Operation(summary = "Get Car by id",
-            description = "Get Car on the web application", tags = { "Car Management" })
-    @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<?>> getClient(@PathVariable Integer id) {
+    
+    @Operation(summary = "Get Site List by Car id",
+            description = "Get Sites associating car on the web application", tags = { "Car Management" })
+    @GetMapping("/sites/{id}")
+    public ResponseEntity<ApiResponse<?>> getSites(@PathVariable Integer id) {
         UserDetailsImpl userDetails = authService.getInfo();
-        if(userDetails.getRole().equals(Role.admin) || userDetails.getRole().equals(Role.branch))
-            return ResponseEntity.ok(new ApiResponse<>(carService.get(id)));
-        return ResponseEntity.badRequest().body(new ApiResponse<>("You don't have permission to do this Action"));
+        return ResponseEntity.ok(new ApiResponse<>(carService.getSites(id)));
     }
 
 
