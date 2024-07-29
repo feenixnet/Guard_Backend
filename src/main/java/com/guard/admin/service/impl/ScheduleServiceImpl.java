@@ -62,7 +62,7 @@ public class ScheduleServiceImpl implements ScheduleService {
             Guard guard = guardRepository.findById(appointment.getGuardId()).get();
             Schedule schedule = new Schedule();
             schedule.setSite(site);
-            schedule.setRule(appointment.getDescription());
+            // schedule.setRule(appointment.getDescription());
             schedule.setStartTime(Date.from(localDateTime.toInstant()));
             schedule.setEndTime(appointment.getEndDate());
             schedule.setGuard(guard);
@@ -130,7 +130,7 @@ public class ScheduleServiceImpl implements ScheduleService {
             scheduleWithSiteHitPoints.setStartTime( formatter.format(schedule.getStartTime()) );
             scheduleWithSiteHitPoints.setHours(schedule.getHours());
             scheduleWithSiteHitPoints.setFrequency(schedule.getFrequency());
-            scheduleWithSiteHitPoints.setRule(schedule.getRule());
+            // scheduleWithSiteHitPoints.setRule(schedule.getRule());
             scheduleWithSiteHitPoints.setSite(schedule.getSite());
             scheduleWithSiteHitPoints.setHitPoints(siteService.getFull(schedule.getSite().getId()).getHitPointsList());
             scheduleWithSiteHitPoints.setAnnounces(schedule.getAnnounces());

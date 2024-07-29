@@ -7,8 +7,8 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "schedule_static")
-public class Schedule {
+@Table(name = "schedule_mobile")
+public class ScheduleMobile {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,8 +20,8 @@ public class Schedule {
     private Guard guard;
 
     @ManyToOne
-    @JoinColumn(name = "site_id")
-    private Site site;
+    @JoinColumn(name = "car_id")
+    private Car car;
 
     private Date startTime;
     private Date endTime;

@@ -4,14 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Date;
-import java.util.List;
 
-import com.mysql.cj.x.protobuf.MysqlxDatatypes.Array;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.*;
 
 @Getter
 @Setter
