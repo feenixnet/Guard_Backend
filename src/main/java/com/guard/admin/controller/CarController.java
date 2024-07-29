@@ -93,7 +93,7 @@ public class CarController {
     }
 
     @Operation(summary = "Get Car by id",
-            description = "Get Car on the web application", tags = { "Client Management" })
+            description = "Get Car on the web application", tags = { "Car Management" })
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<?>> getClient(@PathVariable Integer id) {
         UserDetailsImpl userDetails = authService.getInfo();
