@@ -21,31 +21,19 @@ import com.guard.admin.service.declaration.AuthService;
 import com.guard.admin.service.declaration.NotificationService;
 import com.guard.admin.service.declaration.PhotoService;
 import com.guard.admin.service.declaration.ReportService;
-import com.guard.admin.service.declaration.ScheduleService;
 import com.guard.admin.utils.constant.Role;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.method.P;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -91,11 +79,8 @@ public class SiteController {
     @Autowired
     NotificationService notificationService;
 
-    private static final Logger logger = LoggerFactory.getLogger(ScheduleService.class);
-
-
     private final String uploadDir = System.getProperty("user.dir") + File.separator + "upload/public/images";
-
+    
     @Operation(summary = "Create Site",
             description = "Create a new Site without HitPoints (Admin and Branch Manager) ", tags = { "Site Management" })
     @PostMapping("/")
@@ -321,6 +306,7 @@ public class SiteController {
         try{
             UserDetailsImpl userDetails = authService.getInfo();
             if(userDetails.getRole().equals(Role.guard)) {
+                System.out.println(reportRequest.getPoliceCaseNumber());
                 return ResponseEntity.ok(new ApiResponse<>(reportService.create(reportRequest, userDetails.getId())));
             }
             return ResponseEntity.badRequest().body(new ApiResponse<>("You don't have permission to do this action!"));

@@ -3,9 +3,12 @@ package com.guard.admin.service.impl;
 import java.util.*;
 
 import com.guard.admin.database.entities.HitPoints;
+import com.guard.admin.database.entities.Report;
 import com.guard.admin.database.entities.Shift;
 import com.guard.admin.database.entities.User;
 import com.guard.admin.database.repositories.HitPointRepository;
+import com.guard.admin.database.repositories.PhotoRepository;
+import com.guard.admin.database.repositories.ReportPhotoRepository;
 import com.guard.admin.database.repositories.ReportRepository;
 import com.guard.admin.database.repositories.ScheduleRepository;
 import com.guard.admin.database.repositories.ShiftRepository;
@@ -23,6 +26,8 @@ import org.springframework.stereotype.Service;
 
 import com.guard.admin.database.entities.Site;
 import com.guard.admin.database.repositories.SiteRepository;
+import com.guard.admin.database.repositories.VisitorRepository;
+
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -42,6 +47,15 @@ public class SiteServiceImpl implements SiteService {
 
     @Autowired
     ScheduleRepository scheduleRepository;
+
+    @Autowired
+    PhotoRepository photoRepository;
+
+    @Autowired
+    VisitorRepository visitorRepository;
+
+    @Autowired
+    ReportPhotoRepository reportPhotoRepository;
 
     @Override
     public SiteWithHitpoint getFull(Integer id) {
@@ -124,11 +138,19 @@ public class SiteServiceImpl implements SiteService {
     @Override
     @Transactional
     public void delete(Integer id) {
+        System.out.println(id);
         siteRepository.deleteById(id);
         hitPointRepository.deleteAllBySiteId(id);
         shiftRepository.deleteAllBySiteId(id);
         reportRepository.deleteAllBySiteId(id);
         scheduleRepository.deleteAllBySiteId(id);
+        photoRepository.deleteAllBySiteId(id);
+        visitorRepository.deleteAllBySiteId(id);
+        List<Report> results = reportRepository.findAllBySiteId(id);
+        for(Report report : results) {
+            Integer targetReportId = report.getId();
+            reportPhotoRepository.deleteByReportId(targetReportId);
+        }
     }
 
     @Override

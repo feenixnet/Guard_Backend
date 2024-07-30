@@ -20,7 +20,7 @@ public interface SiteService {
 
     SiteWithHitpoint update(Integer id, SiteWithHitpoint site) ;
 
-    void delete(Integer id) ;
+    void delete(Integer id);
 
     List<HitPoints> getHitPoints(Integer id);
 

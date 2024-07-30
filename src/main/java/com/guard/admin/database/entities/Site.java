@@ -23,6 +23,7 @@ public class Site {
     private double lng;
     private String rule;
     private Integer radius;
+    private String status;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -32,5 +33,9 @@ public class Site {
     @JoinColumn(name = "client_id")
     private Client client;
 
-    private String status;
+    @ManyToOne
+    @JoinColumn(name = "car_id")
+    private Car car;
+
+    
 }
