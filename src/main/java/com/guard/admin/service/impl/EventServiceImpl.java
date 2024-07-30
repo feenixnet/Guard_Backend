@@ -23,7 +23,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class EventServiceImpl implements EventService {
@@ -60,8 +62,11 @@ public class EventServiceImpl implements EventService {
        int clientId = siteRepository.findById(siteId).get().getClient().getId();
 
        Token clientToken = tokenRepository.findByUserIdAndRole(clientId, "ROLE_CLIENT");
+       Map<String, String> additionalParams = new HashMap<>();
+       additionalParams.put("siteId", String.valueOf(siteId));
+        
        if(clientToken != null)
-           notificationService.sendMessage(clientToken.getToken(), "Event", event.getDescription());
+           notificationService.sendMessage(clientToken.getToken(), "Event", event.getDescription(), additionalParams);
 
         eventRepository.save(event);
         return event;

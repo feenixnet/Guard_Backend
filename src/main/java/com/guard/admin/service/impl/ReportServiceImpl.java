@@ -86,9 +86,14 @@ public class ReportServiceImpl implements ReportService {
        if(areaToken != null)
            notificationService.sendMessage(areaToken.getToken(), report.getNature(), report.getDescription());
 
-       Token clientToken = tokenRepository.findByUserIdAndRole(report.getSite().getClient().getId(), report.getSite().getClient().getRole());
+       Token clientToken = tokenRepository.findByUserIdAndRole(report.getSite().getClient().getId(),
+               report.getSite().getClient().getRole());
+        
+       Map<String, String> additionalParams = new HashMap<>();
+       additionalParams.put("siteId", String.valueOf(report.getSite().getId()));
+        
        if(clientToken != null)
-           notificationService.sendMessage(clientToken.getToken(), report.getNature(), report.getDescription());
+           notificationService.sendMessage(clientToken.getToken(), report.getNature(), report.getDescription(), additionalParams);
 
     //    for(Token token : tokenList)
     //    {

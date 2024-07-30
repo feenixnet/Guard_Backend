@@ -10,6 +10,9 @@ import com.guard.admin.service.declaration.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.util.Map;
+import java.util.Collections;
+
 
 @Service
 public class NotificationServiceImpl implements NotificationService {
@@ -18,15 +21,21 @@ public class NotificationServiceImpl implements NotificationService {
     TokenRepository tokenRepository;
 
     @Override
-    public boolean sendMessage(String recipientToken, String title, String body) {
+    public boolean sendMessage(String recipientToken, String title, String body, Map<String, String> additionalParams) {
         try {
-            Message message = Message.builder()
+            Message.Builder messageBuilder = Message.builder()
                     .setToken(recipientToken)
                     .setNotification(Notification.builder()
                             .setTitle(title)
                             .setBody(body)
-                            .build())
-                    .build();
+                            .build());
+
+            // Add additional parameters to the message
+            if (additionalParams != null && !additionalParams.isEmpty()) {
+                messageBuilder.putAllData(additionalParams);
+            }
+
+            Message message = messageBuilder.build();
 
             String response = FirebaseMessaging.getInstance().send(message);
             System.out.println("Successfully sent message: " + response);
@@ -35,6 +44,11 @@ public class NotificationServiceImpl implements NotificationService {
             e.printStackTrace();
             return false;
         }
+    }
+
+    @Override
+    public boolean sendMessage(String recipientToken, String title, String body) {
+        return sendMessage(recipientToken, title, body, Collections.emptyMap());
     }
 
     @Override
