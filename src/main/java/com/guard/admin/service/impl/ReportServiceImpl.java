@@ -5,6 +5,7 @@ import com.guard.admin.database.repositories.*;
 import com.guard.admin.payload.request.ReportRequest;
 import com.guard.admin.payload.response.ReportResponse;
 import com.guard.admin.service.declaration.*;
+import com.guard.admin.service.impl.*;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
 import org.slf4j.Logger;
@@ -17,6 +18,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import com.guard.admin.utils.constant.Role;
+
 
 import java.io.File;
 import java.io.IOException;
@@ -36,6 +39,15 @@ public class ReportServiceImpl implements ReportService {
 
     @Autowired
     ReportPhotoRepository reportPhotoRepository;
+
+    @Autowired
+    TokenRepository tokenRepository;
+
+    @Autowired
+    UserRepository userRepository;
+
+    @Autowired
+    NotificationService notificationService;
 
     private static final Logger logger = LoggerFactory.getLogger(ScheduleService.class);
 
@@ -57,28 +69,28 @@ public class ReportServiceImpl implements ReportService {
         report.setTimestamp(new Date());
         Report updateReport = reportRepository.save(report);
 
-//        List<Token> tokenList = tokenRepository.findAll();
-//        List<User> adminList = userRepository.findAllByRole(Role.admin);
-//
-//        for(User admin : adminList)
-//        {
-//            Token token = tokenRepository.findByUserIdAndRole(admin.getId(), admin.getRole());
-//            if(token != null)
-//                notificationService.sendMessage(token.getToken(), report.getNature(), report.getDescription());
-//        }
-//
-//        Token areaToken = tokenRepository.findByUserIdAndRole(report.getSite().getUser().getId(), report.getSite().getUser().getRole());
-//        if(areaToken != null)
-//            notificationService.sendMessage(areaToken.getToken(), report.getNature(), report.getDescription());
-//
-//        Token clientToken = tokenRepository.findByUserIdAndRole(report.getSite().getClient().getId(), report.getSite().getClient().getRole());
-//        if(clientToken != null)
-//            notificationService.sendMessage(clientToken.getToken(), report.getNature(), report.getDescription());
+       List<Token> tokenList = tokenRepository.findAll();
+       List<User> adminList = userRepository.findAllByRole(Role.admin);
 
-//        for(Token token : tokenList)
-//        {
-//            notificationService.sendMessage(token.getToken(), report.getNature(), report.getDescription());
-//        }
+       for(User admin : adminList)
+       {
+           Token token = tokenRepository.findByUserIdAndRole(admin.getId(), admin.getRole());
+           if(token != null)
+               notificationService.sendMessage(token.getToken(), report.getNature(), report.getDescription());
+       }
+
+       Token areaToken = tokenRepository.findByUserIdAndRole(report.getSite().getUser().getId(), report.getSite().getUser().getRole());
+       if(areaToken != null)
+           notificationService.sendMessage(areaToken.getToken(), report.getNature(), report.getDescription());
+
+       Token clientToken = tokenRepository.findByUserIdAndRole(report.getSite().getClient().getId(), report.getSite().getClient().getRole());
+       if(clientToken != null)
+           notificationService.sendMessage(clientToken.getToken(), report.getNature(), report.getDescription());
+
+    //    for(Token token : tokenList)
+    //    {
+    //        notificationService.sendMessage(token.getToken(), report.getNature(), report.getDescription());
+    //    }
 
         for(String url: reportRequest.getUrls())
         { 

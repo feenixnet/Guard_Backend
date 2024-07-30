@@ -83,7 +83,9 @@ public class ClientController {
     public ResponseEntity<ApiResponse<?>> updateClient(@PathVariable Integer id ,@RequestBody Client clientDetail) {
         try{
             UserDetailsImpl userDetails = authService.getInfo();
-            if(userDetails.getRole().equals(Role.admin) || userDetails.getRole().equals(Role.client)) {
+            System.err.println("XXXXXXXX");
+            if (userDetails.getRole().equals(Role.admin) || userDetails.getRole().equals(Role.client)) {
+                
                 clientService.update(id, clientDetail);
                 return ResponseEntity.ok(new ApiResponse<>(""));
             }
@@ -103,10 +105,10 @@ public class ClientController {
         UserDetailsImpl userDetails = authService.getInfo();
 
         if(pageNum != null) {
-            if(userDetails.getRole().equals(Role.admin))
+            if(userDetails.getRole().equals(Role.admin) || userDetails.getRole().equals(Role.client))
                 return ResponseEntity.ok(new ApiResponse<>(clientService.getPage(pageNum, pageLength, search)));
         } else {
-            if(userDetails.getRole().equals((Role.admin)))
+            if(userDetails.getRole().equals((Role.admin)) || userDetails.getRole().equals(Role.client))
                 return ResponseEntity.ok(new ApiResponse<>(clientService.getAll()));
         }
         return ResponseEntity.badRequest().body(new ApiResponse<>("You don't have permission to do this Action"));
@@ -117,7 +119,7 @@ public class ClientController {
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<?>> getClient(@PathVariable Integer id) {
         UserDetailsImpl userDetails = authService.getInfo();
-        if(userDetails.getRole().equals(Role.admin))
+        if(userDetails.getRole().equals(Role.admin) || userDetails.getRole().equals(Role.client))
             return ResponseEntity.ok(new ApiResponse<>(clientService.get(id)));
         return ResponseEntity.badRequest().body(new ApiResponse<>("You don't have permission to do this Action"));
     }

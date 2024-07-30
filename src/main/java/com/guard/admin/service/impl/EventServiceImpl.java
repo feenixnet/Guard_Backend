@@ -2,9 +2,16 @@ package com.guard.admin.service.impl;
 
 import com.guard.admin.database.entities.Event;
 import com.guard.admin.database.entities.Site;
+import com.guard.admin.database.entities.Token;
+import com.guard.admin.database.entities.User;
 import com.guard.admin.database.repositories.EventRepository;
 import com.guard.admin.database.repositories.SiteRepository;
+import com.guard.admin.database.repositories.TokenRepository;
+import com.guard.admin.database.repositories.UserRepository;
 import com.guard.admin.service.declaration.EventService;
+import com.guard.admin.service.declaration.NotificationService;
+import com.guard.admin.utils.constant.Role;
+
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -27,8 +34,35 @@ public class EventServiceImpl implements EventService {
     @Autowired
     SiteRepository siteRepository;
 
+    @Autowired
+    TokenRepository tokenRepository;
+
+    @Autowired
+    UserRepository userRepository;
+
+    @Autowired
+    NotificationService notificationService;
+
     @Override
     public Event create(Event event) {
+
+        List<Token> tokenList = tokenRepository.findAll();
+        List<User> adminList = userRepository.findAllByRole(Role.admin);
+
+       for(User admin : adminList)
+       {
+           Token token = tokenRepository.findByUserIdAndRole(admin.getId(), admin.getRole());
+           if (token != null)
+               notificationService.sendMessage(token.getToken(), "Event", event.getDescription());
+       }
+
+       int siteId = event.getSiteId();
+       int clientId = siteRepository.findById(siteId).get().getClient().getId();
+
+       Token clientToken = tokenRepository.findByUserIdAndRole(clientId, "ROLE_CLIENT");
+       if(clientToken != null)
+           notificationService.sendMessage(clientToken.getToken(), "Event", event.getDescription());
+
         eventRepository.save(event);
         return event;
     }

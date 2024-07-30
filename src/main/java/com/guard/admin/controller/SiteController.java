@@ -4,6 +4,7 @@ import com.guard.admin.payload.response.ApiResponse;
 import com.guard.admin.payload.response.PhotoResponse;
 import com.guard.admin.payload.response.ReportResponse;
 import com.guard.admin.payload.response.VisitorResponse;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.guard.admin.database.entities.Client;
 import com.guard.admin.database.entities.Photo;
 import com.guard.admin.database.entities.Visitor;
@@ -17,6 +18,7 @@ import com.guard.admin.payload.request.ReportRequest;
 import com.guard.admin.payload.request.VisitorRequest;
 import com.guard.admin.service.impl.UserDetailsImpl;
 import com.guard.admin.service.declaration.AuthService;
+import com.guard.admin.service.declaration.NotificationService;
 import com.guard.admin.service.declaration.PhotoService;
 import com.guard.admin.service.declaration.ReportService;
 import com.guard.admin.service.declaration.ScheduleService;
@@ -50,6 +52,9 @@ import org.springframework.web.multipart.MultipartFile;
 import com.guard.admin.service.declaration.SiteService;
 import com.guard.admin.service.declaration.VisitorService;
 
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
+
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("api/sites")
@@ -82,6 +87,9 @@ public class SiteController {
 
     @Autowired
     PhotoService photoService;
+
+    @Autowired
+    NotificationService notificationService;
 
     private static final Logger logger = LoggerFactory.getLogger(ScheduleService.class);
 
@@ -331,21 +339,19 @@ public class SiteController {
         , @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate 
     ) {
         UserDetailsImpl userDetails = authService.getInfo();
-        if(userDetails.getRole().equals(Role.admin))
-        {
-            return ResponseEntity.ok(new ApiResponse<>(reportService.getPage(siteId, null, pageNum, pageSize, startDate, endDate)));
-        }
-        else if(userDetails.getRole().equals(Role.client))
-        {
+        if (userDetails.getRole().equals(Role.admin)) {
+            return ResponseEntity
+                    .ok(new ApiResponse<>(reportService.getPage(siteId, null, pageNum, pageSize, startDate, endDate)));
+        } else if (userDetails.getRole().equals(Role.client)) {
             Integer clientId = userDetails.getId();
-            if(clientId == siteRepository.findById(siteId).get().getClient().getId())
-            {
-                return ResponseEntity.ok(new ApiResponse<>(reportService.getPage(siteId, null, pageNum, pageSize, startDate, endDate)));
+            if (clientId == siteRepository.findById(siteId).get().getClient().getId()) {
+                return ResponseEntity.ok(
+                        new ApiResponse<>(reportService.getPage(siteId, null, pageNum, pageSize, startDate, endDate)));
             }
         }
         // if(!userDetails.getRole().equals(Role.guard)) {
-            // if(siteId != null)
-                // return ResponseEntity.ok(new ApiResponse<>(reportService.getPage(siteId, null, pageNum, pageSize, startDate, endDate)));
+        // if(siteId != null)
+        // return ResponseEntity.ok(new ApiResponse<>(reportService.getPage(siteId, null, pageNum, pageSize, startDate, endDate)));
         //     else if(userDetails.getRole().equals(Role.admin))
         //         return ResponseEntity.ok(new ApiResponse<>(reportService.getPage(null, null, pageNum, pageSize, startDate, endDate)));
         //     else
@@ -353,5 +359,13 @@ public class SiteController {
         // }
         return ResponseEntity.badRequest().body(new ApiResponse<>("You don't have permission to do this Action!"));
     }
+    
+    @Operation(summary = "Test Firebase Messaging",
+        description = "Test Firebase Messaging ", tags = { "Site Management" })
+    @GetMapping("/test")
+    public void testMessage() {
+        String token = "cs7k-JuzTB-tMInsHrGzGX:APA91bGjH1PK5l-ptiPUELPz6s2d7x28hU65Bcq6v0kzrezs4zfuPnik7I_g4cVncbxSzm2X7lGiMrytcr3dZkxw-P9VKj8SvrLO7RumQoi02nen7K2CB7QGFVmJ8-K-K6oCo-mzBYvj";
 
+        notificationService.sendMessage(token, "Title", "Description");
+    }
 }

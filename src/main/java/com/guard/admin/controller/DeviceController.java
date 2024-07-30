@@ -27,11 +27,8 @@ public class DeviceController {
     public ResponseEntity<ApiResponse<?>> addClient(@RequestParam String token) {
         try{
             UserDetailsImpl userDetails = authService.getInfo();
-            if(!userDetails.getRole().equals(Role.guard)) {
-                tokenService.saveToken(token, userDetails.getId(), userDetails.getRole());
-                return ResponseEntity.ok(new ApiResponse<>(""));
-            }
-            return ResponseEntity.badRequest().body(new ApiResponse<>("You don't have permission to do this action!"));
+            tokenService.saveToken(token, userDetails.getId(), userDetails.getRole());
+            return ResponseEntity.ok(new ApiResponse<>(""));
         } catch(Exception e) {
             return ResponseEntity.badRequest().body(new ApiResponse<>(e.getMessage()));}
     }
