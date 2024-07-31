@@ -17,6 +17,8 @@ import com.guard.admin.payload.dto.SiteWithHitpoint;
 import com.guard.admin.service.declaration.SiteService;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
+import jakarta.validation.OverridesAttribute;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

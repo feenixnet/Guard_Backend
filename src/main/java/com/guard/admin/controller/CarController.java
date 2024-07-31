@@ -108,7 +108,12 @@ public class CarController {
     @GetMapping("/sites/{id}")
     public ResponseEntity<ApiResponse<?>> getSites(@PathVariable Integer id) {
         UserDetailsImpl userDetails = authService.getInfo();
-        return ResponseEntity.ok(new ApiResponse<>(carService.getSites(id)));
+        System.out.println(id);
+        try {
+            return ResponseEntity.ok(new ApiResponse<>(carService.getSites(id)));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new ApiResponse<>(e.getMessage()));
+        }
     }
 
 

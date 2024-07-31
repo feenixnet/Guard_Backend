@@ -25,7 +25,8 @@ public class CarServiceImpl implements CarService{
 
     @Autowired
     CarRepository carRepository;
-    SiteRepository siteRepository;
+    @Autowired
+    private SiteRepository siteRepository;
 
     @Override
     public Car get(Integer id)

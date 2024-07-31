@@ -37,10 +37,13 @@ public class ScheduleMobileController {
             , @RequestParam(required = false) String endTime
             ) {
         System.out.println("Hello");
+        System.out.println("Hello!" + startTime + endTime);
 
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 
         UserDetailsImpl userDetails = authService.getInfo();
+
+        System.out.println(userDetails.getRole());
 
         if(userDetails.getRole().equals(Role.admin) || userDetails.getRole().equals(Role.client) || userDetails.getRole().equals(Role.branch) || userDetails.getRole().equals(Role.area)) {
             System.out.println("OKDDDD");
@@ -75,6 +78,7 @@ public class ScheduleMobileController {
             try {
                 return ResponseEntity.ok(new ApiResponse<>(scheduleMobileService.planForGuard(userDetails.getId(), formatter.parse(startTime), formatter.parse(endTime))));
             } catch (ParseException e) {
+                System.out.println("Hello!" + e);
                 // TODO Auto-generated catch block
                 e.printStackTrace();
                 return ResponseEntity.badRequest().body(new ApiResponse<>("You don't have permission to do this Action!"));
