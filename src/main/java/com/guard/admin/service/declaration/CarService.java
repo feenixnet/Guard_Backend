@@ -2,6 +2,7 @@ package com.guard.admin.service.declaration;
 
 import java.util.List;
 
+import com.guard.admin.payload.dto.SiteWithHitpoint;
 import com.guard.admin.payload.response.DataTableResponse;
 
 
@@ -21,5 +22,5 @@ public interface CarService {
 
     DataTableResponse<Car> getPage(Integer pageNumber, Integer pageSize, String searchKeyword);
 
-    List<Site> getSites(Integer carId);
+    List<SiteWithHitpoint> getSites(Integer carId);
 }

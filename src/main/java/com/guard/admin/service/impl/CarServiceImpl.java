@@ -15,9 +15,11 @@ import com.guard.admin.database.entities.Site;
 import com.guard.admin.database.repositories.CarRepository;
 import com.guard.admin.database.repositories.SiteRepository;
 import com.guard.admin.service.declaration.CarService;
+import com.guard.admin.service.declaration.SiteService;
 
 import jakarta.persistence.criteria.Predicate;
 
+import com.guard.admin.payload.dto.SiteWithHitpoint;
 import com.guard.admin.payload.response.DataTableResponse;
 
 @Service
@@ -27,6 +29,9 @@ public class CarServiceImpl implements CarService{
     CarRepository carRepository;
     @Autowired
     private SiteRepository siteRepository;
+
+    @Autowired
+    private SiteService siteSrvice;
 
     @Override
     public Car get(Integer id)
@@ -99,8 +104,13 @@ public class CarServiceImpl implements CarService{
     }
     
     @Override
-    public List<Site> getSites(Integer carId)
+    public List<SiteWithHitpoint> getSites(Integer carId)
     {
-        return siteRepository.findAllByCarId(carId);
+        List<SiteWithHitpoint> result = new ArrayList<>(); ;
+        for(Site site : siteRepository.findAllByCarId(carId))
+        {
+            result.add(siteSrvice.getFull(site.getId()));
+        }
+        return result;
     }
 }
