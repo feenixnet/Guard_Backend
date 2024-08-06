@@ -141,6 +141,9 @@ public class GuardServiceImpl implements GuardService {
         if(request.getExpiryDateForFirearmsLicense() != null)
             updateGuard.setExpiryDateForFirearmsLicense(request.getExpiryDateForFirearmsLicense());
 
+
+        System.out.println("UploadDir " + uploadDir);
+
         if(request.getDriverImage() != null && !request.getDriverImage().isEmpty()) {
             MultipartFile file = request.getDriverImage();
             String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
@@ -165,8 +168,11 @@ public class GuardServiceImpl implements GuardService {
             updateGuard.setFirearmsLicenseUrl(fileName);
         }
 
-        if(!request.getPassword().isEmpty())
+        if(request.getPassword() != null && !request.getPassword().isEmpty()){
+            System.out.println("Passowrd:" + request.getPassword());
             updateGuard.setPassword(encoder.encode(request.getPassword()));
+
+        }
 
         guardRepository.save(updateGuard);
 

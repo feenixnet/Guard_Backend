@@ -81,7 +81,7 @@ public class UserServiceImpl implements UserService {
             user.setPassword(encoder.encode(userDetail.getPassword()));
         userRepository.save(user);
 
-        firebaseAuthServiceImpl.updateClientUser(id, userDetail.getEmail(), userDetail.getPassword());
+        firebaseAuthServiceImpl.updateStaffUser(id, userDetail.getEmail(), userDetail.getPassword());
         return user;
     }
 

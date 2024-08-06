@@ -77,7 +77,8 @@ public class GuardController {
             }
             return ResponseEntity.badRequest().body(new ApiResponse<>("You don't have permission to do this Action"));
         } catch (Exception ignored) {
-            return ResponseEntity.badRequest().body(new ApiResponse<>("error"));
+            System.out.println(ignored);
+            return ResponseEntity.badRequest().body(new ApiResponse<>("errorasdasdadsasdasdasd"));
         }
     }
 

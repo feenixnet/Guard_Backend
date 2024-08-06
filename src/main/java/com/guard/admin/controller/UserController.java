@@ -121,6 +121,7 @@ public class UserController {
             }
             return ResponseEntity.badRequest().body(new ApiResponse<>("You don't have permission to do this action!"));
         } catch(Exception e) {
+            System.out.println(e);
             return ResponseEntity.badRequest().body(new ApiResponse<>(e.getMessage()));}
     }
 }

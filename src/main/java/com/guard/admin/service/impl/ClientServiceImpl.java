@@ -61,7 +61,7 @@ public class ClientServiceImpl implements ClientService {
 
         clientRepository.save(updateClient);
 
-        firebaseAuthServiceImpl.updateClientUser(id, clientDetail.getEmail(),clientDetail.getPassword());
+        firebaseAuthServiceImpl.updateClientUser(id, clientDetail.getEmail(), clientDetail.getPassword());
     }
 
     @Override

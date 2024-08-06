@@ -49,8 +49,9 @@ public class FirebaseAuthServiceImpl implements FirebaseAuthService {
     @Override
     public UserRecord updateGuardUser(Integer id, String email, String password) throws FirebaseAuthException {
         UserRecord.UpdateRequest request = new UserRecord.UpdateRequest(FirebaseAuth.getInstance().getUserByEmail(guardRepository.findById(id).get().getEmail()).getUid())
-            .setEmail(email)
-            .setPassword(password);
+            .setEmail(email);
+        if(!password.isEmpty())
+            request.setPassword(password);
         
         return FirebaseAuth.getInstance().updateUser(request);
     }
@@ -58,8 +59,9 @@ public class FirebaseAuthServiceImpl implements FirebaseAuthService {
     @Override
     public UserRecord updateClientUser(Integer id, String email, String password) throws FirebaseAuthException {
         UserRecord.UpdateRequest request = new UserRecord.UpdateRequest(FirebaseAuth.getInstance().getUserByEmail(clientRepository.findById(id).get().getEmail()).getUid())
-            .setEmail(email)
-            .setPassword(password);
+            .setEmail(email);
+        if(!password.isEmpty())
+            request.setPassword(password);
         
         return FirebaseAuth.getInstance().updateUser(request);
     }
@@ -67,8 +69,9 @@ public class FirebaseAuthServiceImpl implements FirebaseAuthService {
     @Override
     public UserRecord updateStaffUser(Integer id, String email, String password) throws FirebaseAuthException {
         UserRecord.UpdateRequest request = new UserRecord.UpdateRequest(FirebaseAuth.getInstance().getUserByEmail(userRepository.findById(id).get().getEmail()).getUid())
-            .setEmail(email)
-            .setPassword(password);
+            .setEmail(email);
+        if(!password.isEmpty())
+            request.setPassword(password);
         
         return FirebaseAuth.getInstance().updateUser(request);
     }
