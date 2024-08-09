@@ -30,7 +30,7 @@ public class AuthEntryPointJwt implements AuthenticationEntryPoint {
 
     final Map<String, Object> body = new HashMap<>();
 
-    if(authException.getMessage().equals("Bad credentials")){
+    if(!authException.getMessage().equals("Bad credentials")){
       response.setContentType(MediaType.APPLICATION_JSON_VALUE);
       response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 

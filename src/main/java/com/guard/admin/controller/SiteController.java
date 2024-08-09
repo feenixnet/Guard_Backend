@@ -84,11 +84,11 @@ public class SiteController {
     @Operation(summary = "Create Site",
             description = "Create a new Site without HitPoints (Admin and Branch Manager) ", tags = { "Site Management" })
     @PostMapping("/")
-    public ResponseEntity<ApiResponse<?>> addSite(@RequestBody SiteWithHitpoint Site) {
+    public ResponseEntity<ApiResponse<?>> addSite(@RequestBody SiteWithHitpoint site) {
         try{
             UserDetailsImpl userDetails = authService.getInfo();
             if(userDetails.getRole().equals(Role.admin) || userDetails.getRole().equals(Role.branch)) {
-                return ResponseEntity.ok(new ApiResponse<>(siteService.create(Site)));
+                return ResponseEntity.ok(new ApiResponse<>(siteService.create(site)));
             }
             return ResponseEntity.badRequest().body(new ApiResponse<>("You don't have permission to do this action!"));
         } catch(Exception e) {

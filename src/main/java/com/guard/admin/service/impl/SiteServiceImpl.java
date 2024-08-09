@@ -103,6 +103,7 @@ public class SiteServiceImpl implements SiteService {
         updateSite.setRadius(siteDetail.getRadius());
         updateSite.setStatus(siteDetail.getStatus());
         updateSite.setRule(siteDetail.getRule());
+        updateSite.setCar(siteDetail.getCar());
         siteRepository.save(updateSite);
 
         hitPointRepository.deleteAllBySiteId(id);
@@ -141,19 +142,23 @@ public class SiteServiceImpl implements SiteService {
     @Transactional
     public void delete(Integer id) {
         System.out.println(id);
-        siteRepository.deleteById(id);
         hitPointRepository.deleteAllBySiteId(id);
         shiftRepository.deleteAllBySiteId(id);
-        reportRepository.deleteAllBySiteId(id);
         scheduleRepository.deleteAllBySiteId(id);
         photoRepository.deleteAllBySiteId(id);
         visitorRepository.deleteAllBySiteId(id);
+        
         List<Report> results = reportRepository.findAllBySiteId(id);
         for(Report report : results) {
             Integer targetReportId = report.getId();
             reportPhotoRepository.deleteByReportId(targetReportId);
         }
+        
+        reportRepository.deleteAllBySiteId(id);
+        
+        siteRepository.deleteById(id);
     }
+    
 
     @Override
     public List<SiteWithHitpoint> getByUser(Integer id) {
