@@ -17,7 +17,7 @@ public class Shift {
     private Integer siteId;
     private Integer day;
     private String startTime;
-    private Integer hours;
+    private Double hours;
     private Integer count;
     private Double frequency;
     private Boolean status;

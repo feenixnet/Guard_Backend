@@ -25,7 +25,7 @@ public class ScheduleMobile {
 
     private Date startTime;
     private Date endTime;
-    private Integer hours;
+    private Double hours;
     private Double frequency;
     private String announces;
 }

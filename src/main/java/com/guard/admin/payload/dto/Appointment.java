@@ -15,7 +15,7 @@ public class Appointment {
     private Date startDate;
     private Date endDate;
     private Integer guardId;
-    private Integer hours;
+    private Double hours;
     private Double frequency;
     private String announces;
 }
