@@ -42,7 +42,9 @@ public class CarController {
     public ResponseEntity<ApiResponse<?>> add(@RequestBody Car car) {
         try{
             UserDetailsImpl userDetails = authService.getInfo();
-            if(userDetails.getRole().equals(Role.admin) || userDetails.getRole().equals(Role.branch)) {
+            if(userDetails.getRole().equals(Role.admin) || userDetails.getRole().equals(Role.branch)
+            || userDetails.getRole().equals(Role.area) || userDetails.getRole().equals(Role.dispatch)
+            ) {
                 return ResponseEntity.ok(new ApiResponse<>(carService.create(car)));
             }
             return ResponseEntity.badRequest().body(new ApiResponse<>("You don't have permission to do this action!"));
@@ -57,7 +59,9 @@ public class CarController {
     public ResponseEntity<ApiResponse<?>> update(@PathVariable Integer id ,@RequestBody Car car) {
         try{
             UserDetailsImpl userDetails = authService.getInfo();
-            if(userDetails.getRole().equals(Role.admin) || userDetails.getRole().equals(Role.branch)) {
+            if(userDetails.getRole().equals(Role.admin) || userDetails.getRole().equals(Role.branch)
+            || userDetails.getRole().equals(Role.area) || userDetails.getRole().equals(Role.dispatch)
+            ) {
                 carService.update(id, car);
                 return ResponseEntity.ok(new ApiResponse<>(""));
             }
@@ -72,7 +76,9 @@ public class CarController {
     public ResponseEntity<ApiResponse<?>> delete(@PathVariable Integer id) {
         try{
             UserDetailsImpl userDetails = authService.getInfo();
-            if(userDetails.getRole().equals(Role.admin) || userDetails.getRole().equals(Role.branch)) {
+            if(userDetails.getRole().equals(Role.admin) || userDetails.getRole().equals(Role.branch)
+            || userDetails.getRole().equals(Role.area) || userDetails.getRole().equals(Role.dispatch)
+            ) {
                 carService.delete(id);
                 return ResponseEntity.ok(new ApiResponse<>(""));
             }
@@ -93,10 +99,14 @@ public class CarController {
         UserDetailsImpl userDetails = authService.getInfo();
 
         if(pageNum != null) {
-            if(userDetails.getRole().equals(Role.admin) || userDetails.getRole().equals(Role.branch))
+            if(userDetails.getRole().equals(Role.admin) || userDetails.getRole().equals(Role.branch)
+            || userDetails.getRole().equals(Role.area) || userDetails.getRole().equals(Role.dispatch)
+            )
                 return ResponseEntity.ok(new ApiResponse<>(carService.getPage(pageNum, pageLength, search)));
         } else {
-            if(userDetails.getRole().equals(Role.admin) || userDetails.getRole().equals(Role.branch))
+            if(userDetails.getRole().equals(Role.admin) || userDetails.getRole().equals(Role.branch)
+            || userDetails.getRole().equals(Role.area) || userDetails.getRole().equals(Role.dispatch)
+            )
                 return ResponseEntity.ok(new ApiResponse<>(carService.getAll()));
         }
         return ResponseEntity.badRequest().body(new ApiResponse<>("You don't have permission to do this Action"));

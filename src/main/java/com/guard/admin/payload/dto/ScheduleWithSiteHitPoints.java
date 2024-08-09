@@ -14,7 +14,7 @@ public class ScheduleWithSiteHitPoints {
 
     private Integer id;
     private String startTime;
-    private Integer hours;
+    private Double hours;
     private Double frequency;
     private String rule;
     private Site site;
