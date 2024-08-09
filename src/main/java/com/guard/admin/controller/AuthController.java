@@ -112,6 +112,9 @@ public class AuthController {
 
         Guard guard = guardRepository.findById(userDetails.getId()).get();
 
+    
+        System.out.println(guard.getEmail());
+
         return ResponseEntity.ok(new ApiResponse<>(new JwtGuardResponse(jwt, refreshToken, guard)));
     }
 

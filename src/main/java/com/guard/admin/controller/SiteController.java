@@ -231,11 +231,14 @@ public class SiteController {
                 visitor.setLicenseplate(visitorRequest.getLicenseplate());
                 visitor.setReason(visitorRequest.getReason());
                 visitor.setGuard(guardRepository.findById(userDetails.getId()).get());
+
+                if(visitorRequest.getImage() != null) {
+                    String fileName = System.currentTimeMillis() + "_" + visitorRequest.getImage().getOriginalFilename();
+                    File destination = new File(uploadDir + File.separator + fileName);
+                    visitorRequest.getImage().transferTo(destination);
+                    visitor.setUrl(fileName);
+                }
                 
-                String fileName = System.currentTimeMillis() + "_" + visitorRequest.getImage().getOriginalFilename();
-                File destination = new File(uploadDir + File.separator + fileName);
-                visitorRequest.getImage().transferTo(destination);
-                visitor.setUrl(fileName);
                 visitor.setTimestamp(new Date());
                 visitorRepository.save(visitor);
                 return ResponseEntity.ok(new ApiResponse<>("ok"));
