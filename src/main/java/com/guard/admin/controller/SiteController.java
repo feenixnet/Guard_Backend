@@ -329,7 +329,7 @@ public class SiteController {
                 if(result)
                     return ResponseEntity.ok(new ApiResponse<>("Successfully approved."));
                 else
-                    return ResponseEntity.badRequest().body(new ApiResponse<>("Error occured."));
+                    return ResponseEntity.badRequest().body(new ApiResponse<>("Error occured.",  userDetails.getId()));
             }
             return ResponseEntity.badRequest().body(new ApiResponse<>("You don't have permission to do this action!"));
         } catch(Exception e) {
