@@ -144,4 +144,19 @@ public class ReportServiceImpl implements ReportService {
         }
         return reportResponses;
     }
+
+    @Override
+    public boolean approveReport(Integer reportId, Integer userId)
+    {
+        try{
+            Report report = reportRepository.findById(reportId).get();
+            report.setApproved(true);
+            report.setApprovedBy(userRepository.findById(userId).get());
+            reportRepository.save(report);
+            return true;
+        } catch(Exception e){
+            return false;
+        }
+        
+    }
 }

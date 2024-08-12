@@ -312,12 +312,29 @@ public class SiteController {
         try{
             UserDetailsImpl userDetails = authService.getInfo();
             if(userDetails.getRole().equals(Role.guard)) {
-                System.out.println(reportRequest.getPoliceCaseNumber());
                 return ResponseEntity.ok(new ApiResponse<>(reportService.create(reportRequest, userDetails.getId())));
             }
             return ResponseEntity.badRequest().body(new ApiResponse<>("You don't have permission to do this action!"));
         } catch(Exception e) {
             return ResponseEntity.badRequest().body(new ApiResponse<>(e.getMessage()));}
+    }
+    @Operation(summary = "Approve Report",
+        description = "Approve report for site by Admin or Branch Manager or Area Manager", tags = { "Site Management" })
+    @PutMapping("/reports/{reportId}")
+    public ResponseEntity<ApiResponse<?>> approveReport(@PathVariable Integer reportId) {
+        try{
+            UserDetailsImpl userDetails = authService.getInfo();
+            if(userDetails.getRole().equals(Role.admin) || userDetails.getRole().equals(Role.area) || userDetails.getRole().equals(Role.branch)) {
+                boolean result = reportService.approveReport(reportId, userDetails.getId());
+                if(result)
+                    return ResponseEntity.ok(new ApiResponse<>("Successfully approved."));
+                else
+                    return ResponseEntity.badRequest().body(new ApiResponse<>("Error occured."));
+            }
+            return ResponseEntity.badRequest().body(new ApiResponse<>("You don't have permission to do this action!"));
+        } catch(Exception e) {
+            return ResponseEntity.badRequest().body(new ApiResponse<>(e.getMessage()));
+        }
     }
 
     @Operation(summary = "Get Report History",

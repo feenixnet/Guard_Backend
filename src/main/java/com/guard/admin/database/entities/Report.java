@@ -29,4 +29,10 @@ public class Report {
     private String policeCaseNumber;
     private String policeOfficerContactDetails;
     private String signature;
+
+    private Boolean approved;
+    
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User approvedBy;
 }
