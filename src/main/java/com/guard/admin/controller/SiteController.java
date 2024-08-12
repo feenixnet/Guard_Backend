@@ -43,6 +43,8 @@ import com.guard.admin.service.declaration.VisitorService;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 
+import java.util.ArrayList;
+
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("api/sites")
@@ -177,7 +179,7 @@ public class SiteController {
             UserDetailsImpl userDetails = authService.getInfo();
             if(userDetails.getRole().equals(Role.guard)) {
                 
-
+                List<Photo> photoList = new ArrayList<>();
                 for(MultipartFile file: fileRequest.getImage())
                 {
                     String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
@@ -189,8 +191,9 @@ public class SiteController {
                     photo.setTimestamp(new Date());
                     photo.setUrl(fileName);
                     photoRepository.save(photo);
+                    photoList.add(photo);
                 }
-                return ResponseEntity.ok(new ApiResponse<>("ok"));
+                return ResponseEntity.ok(new ApiResponse<>("", photoList.get(0).getUrl()));
             }
             return ResponseEntity.badRequest().body(new ApiResponse<>("You don't have permission to do this action!"));
         } catch(Exception e) {
