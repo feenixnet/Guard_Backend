@@ -70,6 +70,7 @@ public class ReportServiceImpl implements ReportService {
         report.setOtherInvolved(reportRequest.getOtherInvolved());
         report.setPoliceCaseNumber(reportRequest.getPoliceCaseNumber());
         report.setPoliceOfficerContactDetails(reportRequest.getPoliceOfficerContactDetails());
+        report.setSignature(reportRequest.getSignature());
         Report updateReport = reportRepository.save(report);
 
        List<Token> tokenList = tokenRepository.findAll();

@@ -28,4 +28,5 @@ public class Report {
     private Boolean otherInvolved;
     private String policeCaseNumber;
     private String policeOfficerContactDetails;
+    private String signature;
 }
