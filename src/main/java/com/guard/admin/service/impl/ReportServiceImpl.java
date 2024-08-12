@@ -146,7 +146,7 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public boolean approveReport(Integer reportId, Integer userId)
+    public boolean approveReport(Integer reportId, Integer userId, boolean isApporved)
     {
         System.out.println(reportId + " " + userId);
         try{
@@ -155,8 +155,11 @@ public class ReportServiceImpl implements ReportService {
             Report report = reportRepository.findById(reportId).get();
             System.out.println(report);
             
-            report.setApproved(true);
-            report.setApprovedBy(user);
+            report.setApproved(isApporved);
+            if(isApporved)
+                report.setApprovedBy(user);
+            else
+                report.setApprovedBy(null);
             reportRepository.save(report);
             return true;
         } catch(Exception e){

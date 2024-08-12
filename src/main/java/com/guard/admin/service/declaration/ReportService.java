@@ -13,5 +13,5 @@ public interface ReportService {
 
     List<ReportResponse> getPage(Integer siteId, Integer userId, int pageNum, int pageSize, Date startDate, Date endDate);
 
-    boolean approveReport(Integer reportId, Integer userId);
+    boolean approveReport(Integer reportId, Integer userId, boolean isApporved);
 }

@@ -319,15 +319,15 @@ public class SiteController {
             return ResponseEntity.badRequest().body(new ApiResponse<>(e.getMessage()));}
     }
     @Operation(summary = "Approve Report",
-        description = "Approve report for site by Admin or Branch Manager or Area Manager", tags = { "Site Management" })
+        description = "Approve or Cancel report for site by Admin or Branch Manager or Area Manager", tags = { "Site Management" })
     @PutMapping("/reports/{reportId}")
-    public ResponseEntity<ApiResponse<?>> approveReport(@PathVariable Integer reportId) {
+    public ResponseEntity<ApiResponse<?>> approveReport(@PathVariable Integer reportId, @RequestBody Boolean isApproved) {
         try{
             UserDetailsImpl userDetails = authService.getInfo();
             if(userDetails.getRole().equals(Role.admin) || userDetails.getRole().equals(Role.area) || userDetails.getRole().equals(Role.branch)) {
-                boolean result = reportService.approveReport(reportId, userDetails.getId());
+                boolean result = reportService.approveReport(reportId, userDetails.getId(), isApproved);
                 if(result)
-                    return ResponseEntity.ok(new ApiResponse<>("Successfully approved."));
+                    return ResponseEntity.ok(new ApiResponse<>(isApproved?"Successfully approved." : "Sucessfully canceled."));
                 else
                     return ResponseEntity.badRequest().body(new ApiResponse<>("Error occured.",  userDetails.getId()));
             }
