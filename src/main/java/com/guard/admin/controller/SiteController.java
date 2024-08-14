@@ -373,7 +373,7 @@ public class SiteController {
         description = "Test Firebase Messaging ", tags = { "Site Management" })
     @GetMapping("/test")
     public void testMessage() {
-        String token = "cs7k-JuzTB-tMInsHrGzGX:APA91bGjH1PK5l-ptiPUELPz6s2d7x28hU65Bcq6v0kzrezs4zfuPnik7I_g4cVncbxSzm2X7lGiMrytcr3dZkxw-P9VKj8SvrLO7RumQoi02nen7K2CB7QGFVmJ8-K-K6oCo-mzBYvj";
+        String token = "hG1c4gwROH7OUXr9rXiOjLVG14MXRQRlo0IYl14SCdU";
 
         notificationService.sendMessage(token, "Title", "Description");
     }
