@@ -350,12 +350,12 @@ public class SiteController {
         UserDetailsImpl userDetails = authService.getInfo();
         if (userDetails.getRole().equals(Role.admin)) {
             return ResponseEntity
-                    .ok(new ApiResponse<>(reportService.getPage(siteId, null, pageNum, pageSize, startDate, endDate)));
+                    .ok(new ApiResponse<>(reportService.getPage(siteId, null, pageNum, pageSize, startDate, endDate, null)));
         } else if (userDetails.getRole().equals(Role.client)) {
             Integer clientId = userDetails.getId();
             if (clientId == siteRepository.findById(siteId).get().getClient().getId()) {
                 return ResponseEntity.ok(
-                        new ApiResponse<>(reportService.getPage(siteId, null, pageNum, pageSize, startDate, endDate)));
+                        new ApiResponse<>(reportService.getPage(siteId, null, pageNum, pageSize, startDate, endDate, clientId)));
             }
         }
         // if(!userDetails.getRole().equals(Role.guard)) {

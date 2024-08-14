@@ -112,7 +112,7 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public List<ReportResponse> getPage(Integer siteId, Integer userId, int pageNum, int pageSize, Date startDate, Date endDate) {
+    public List<ReportResponse> getPage(Integer siteId, Integer userId, int pageNum, int pageSize, Date startDate, Date endDate, Integer clientId) {
         Pageable pageable = PageRequest.of(pageNum, pageSize, Sort.by(Sort.Direction.DESC, "timestamp"));
         Specification<Report> specification = (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
@@ -123,6 +123,9 @@ public class ReportServiceImpl implements ReportService {
             if(userId != null) {
                 List<Site> siteList = siteRepository.findAllByUserId(userId);
                 predicates.add(root.get("site").in(siteList));
+            }
+            if(clientId != null) {
+                predicates.add(criteriaBuilder.equal(root.get("approved"), true));
             }
             if(startDate != null)
                 predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("timestamp"),startDate));
