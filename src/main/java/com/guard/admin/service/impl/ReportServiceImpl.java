@@ -142,7 +142,13 @@ public class ReportServiceImpl implements ReportService {
         {
             ReportResponse reportResponse = new ReportResponse();
             reportResponse.setReport(report);
-            List<ReportPhoto> photoList = reportPhotoRepository.findByReportId(report.getId());
+            List<ReportPhoto> reportPhotoList = reportPhotoRepository.findByReportId(report.getId());
+            List<Photo> photoList = reportResponse.getPhotoList();
+            for(ReportPhoto reportPhoto : reportPhotoList)
+            {
+                photoList.add(reportPhoto.getPhoto());
+            }
+
             reportResponse.setPhotoList(photoList);
 
             reportResponses.add(reportResponse);
