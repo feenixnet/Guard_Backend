@@ -3,6 +3,7 @@ package com.guard.admin.service.impl;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.guard.admin.database.entities.Bug;
 import com.guard.admin.database.repositories.BugRepository;
@@ -14,6 +15,7 @@ import com.guard.admin.database.repositories.UserRepository;
 import com.guard.admin.service.declaration.BugService;
 import com.guard.admin.utils.constant.Role;
 
+@Service
 public class BugServiceImpl implements BugService{
 
     @Autowired
