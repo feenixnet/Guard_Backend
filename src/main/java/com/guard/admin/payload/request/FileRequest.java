@@ -8,5 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Setter
 public class FileRequest {
     private MultipartFile[] image;
+    private String title;
     private Integer siteId;
+
 }
