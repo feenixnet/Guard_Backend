@@ -27,19 +27,19 @@ public class BugServiceImpl implements BugService{
     BugRepository bugRepository;
 
     @Override
-    public Boolean create(UserDetailsImpl userDetail, String description)
+    public Boolean create(UserDetailsImpl userDetails, String description)
     {
         try{
             Bug bug = new Bug();
             bug.setTimestamp(new Date());
             bug.setDescription(description);
 
-            if(userDetail.getRole() == Role.client) {
-                bug.setClient(clientRepository.findById(clientId).get());
-            } else if(userDetail.getRole() == Role.guard){
-                bug.setGuard(guardRepository.findById(guardId).get());
+            if(userDetails.getRole() == Role.client) {
+                bug.setClient(clientRepository.findById(userDetails.getId()).get());
+            } else if(userDetails.getRole() == Role.guard){
+                bug.setGuard(guardRepository.findById(userDetails.getId()).get());
             } else {
-                bug.setUser(userRepository.findById(userId).get());
+                bug.setUser(userRepository.findById(userDetails.getId()).get());
             }
             
             bugRepository.save(bug);
