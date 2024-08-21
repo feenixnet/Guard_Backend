@@ -11,7 +11,7 @@ public class ReportRequest {
     private Integer siteId;
     private String nature;
     private String description;
-    private Boolean otherInvolved;
+    private String otherInvolved;
     private String policeCaseNumber;
     private String policeOfficerContactDetails;
     private String signature;
