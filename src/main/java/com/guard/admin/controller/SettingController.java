@@ -5,6 +5,7 @@ import com.guard.admin.payload.response.ApiResponse;
 import com.guard.admin.payload.response.MessageResponse;
 import com.guard.admin.service.impl.UserDetailsImpl;
 import com.guard.admin.service.declaration.AuthService;
+import com.guard.admin.service.declaration.BugService;
 import com.guard.admin.service.declaration.SettingService;
 import com.guard.admin.utils.constant.Role;
 import com.guard.admin.payload.request.SettingRequest;
@@ -23,6 +24,9 @@ import io.swagger.v3.oas.annotations.media.Content;
 public class SettingController {
     @Autowired
     SettingService settingService;
+
+    @Autowired
+    BugService bugService;
 
     @Autowired
     AuthService authService;
@@ -49,6 +53,18 @@ public class SettingController {
     public ResponseEntity<ApiResponse<?>> getSetting() {
         try{
             return ResponseEntity.ok(new ApiResponse<>(settingService.get()));
+        } catch(Exception e) {
+            return ResponseEntity.badRequest().body(new ApiResponse<>(e.getMessage()));}
+    }
+
+    @Operation(summary = "Save reported Bug",
+            description = "Save reported Bug", tags = { "Setting Management" })
+    @PutMapping("/")
+    public ResponseEntity<ApiResponse<?>> ReportBug(   
+        @ModelAttribute String bugText) {
+        try{
+            UserDetailsImpl userDetails = authService.getInfo();
+            return ResponseEntity.ok(new ApiResponse<>(bugService.create(userDetails, bugText)));
         } catch(Exception e) {
             return ResponseEntity.badRequest().body(new ApiResponse<>(e.getMessage()));}
     }
