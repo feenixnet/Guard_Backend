@@ -20,6 +20,5 @@ public class Shift {
     private Double hours;
     private Integer count;
     private Double frequency;
-    private Boolean status;
     private String announces;
 }
