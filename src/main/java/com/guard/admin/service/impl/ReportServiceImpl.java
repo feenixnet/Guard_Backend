@@ -38,6 +38,9 @@ public class ReportServiceImpl implements ReportService {
     GuardService guardService;
 
     @Autowired
+    PhotoRepository photoRepository;
+
+    @Autowired
     ReportPhotoRepository reportPhotoRepository;
 
     @Autowired
@@ -101,13 +104,13 @@ public class ReportServiceImpl implements ReportService {
     //        notificationService.sendMessage(token.getToken(), report.getNature(), report.getDescription());
     //    }
 
-        Photo[] photos = reportRequest.getPhotos();
+        Integer[] photoIds = reportRequest.getPhotoIds();
 
-        for(int i = 0; i < photos.length; i++)
+        for(int i = 0; i < photoIds.length; i++)
         { 
             ReportPhoto reportPhoto = new ReportPhoto();
             reportPhoto.setReport(reportRepository.findById(updateReport.getId()).get());
-            reportPhoto.setPhoto(photos[i]);
+            reportPhoto.setPhoto(photoRepository.findById(photoIds[i]).get());
             reportPhotoRepository.save(reportPhoto);
         }
         return updateReport;
