@@ -101,15 +101,13 @@ public class ReportServiceImpl implements ReportService {
     //        notificationService.sendMessage(token.getToken(), report.getNature(), report.getDescription());
     //    }
 
-        String[] urls = reportRequest.getUrls();
-        String[] titles = reportRequest.getTitles();
+        Photo[] photos = reportRequest.getPhotos();
 
-        for(int i = 0; i < urls.length; i++)
+        for(int i = 0; i < photos.length; i++)
         { 
             ReportPhoto reportPhoto = new ReportPhoto();
             reportPhoto.setReport(reportRepository.findById(updateReport.getId()).get());
-            reportPhoto.setUrl(urls[i]);
-            reportPhoto.setTitle(titles[i]);
+            reportPhoto.setPhoto(photos[i]);
             reportPhotoRepository.save(reportPhoto);
         }
         return updateReport;

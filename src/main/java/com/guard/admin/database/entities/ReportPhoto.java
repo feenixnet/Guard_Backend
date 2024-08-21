@@ -22,6 +22,7 @@ public class ReportPhoto {
     @JoinColumn(name = "report_id")
     private Report report;
 
-    private String url;
-    private String title;
+    @ManyToOne
+    @JoinColumn(name = "photo_id")
+    private Photo photo;
 }
