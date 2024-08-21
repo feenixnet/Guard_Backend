@@ -60,8 +60,7 @@ public class SettingController {
     @Operation(summary = "Save reported Bug",
             description = "Save reported Bug", tags = { "Setting Management" })
     @PutMapping("/bugs")
-    public ResponseEntity<ApiResponse<?>> ReportBug(   
-        @ModelAttribute String bugText) {
+    public ResponseEntity<ApiResponse<?>> ReportBug(@RequestBody String bugText) {
         try{
             UserDetailsImpl userDetails = authService.getInfo();
             return ResponseEntity.ok(new ApiResponse<>(bugService.create(userDetails, bugText)));
