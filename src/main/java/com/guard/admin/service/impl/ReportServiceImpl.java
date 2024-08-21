@@ -73,39 +73,43 @@ public class ReportServiceImpl implements ReportService {
         report.setSignature(reportRequest.getSignature());
         Report updateReport = reportRepository.save(report);
 
-       List<Token> tokenList = tokenRepository.findAll();
-       List<User> adminList = userRepository.findAllByRole(Role.admin);
+        List<Token> tokenList = tokenRepository.findAll();
+        List<User> adminList = userRepository.findAllByRole(Role.admin);
 
-       for(User admin : adminList)
-       {
-           Token token = tokenRepository.findByUserIdAndRole(admin.getId(), admin.getRole());
-           if(token != null)
-               notificationService.sendMessage(token.getToken(), report.getNature(), report.getDescription());
-       }
+        for(User admin : adminList)
+        {
+            Token token = tokenRepository.findByUserIdAndRole(admin.getId(), admin.getRole());
+            if(token != null)
+                notificationService.sendMessage(token.getToken(), report.getNature(), report.getDescription());
+        }
 
-       Token areaToken = tokenRepository.findByUserIdAndRole(report.getSite().getUser().getId(), report.getSite().getUser().getRole());
-       if(areaToken != null)
-           notificationService.sendMessage(areaToken.getToken(), report.getNature(), report.getDescription());
+        Token areaToken = tokenRepository.findByUserIdAndRole(report.getSite().getUser().getId(), report.getSite().getUser().getRole());
+        if(areaToken != null)
+            notificationService.sendMessage(areaToken.getToken(), report.getNature(), report.getDescription());
 
-       Token clientToken = tokenRepository.findByUserIdAndRole(report.getSite().getClient().getId(),
-               report.getSite().getClient().getRole());
+        Token clientToken = tokenRepository.findByUserIdAndRole(report.getSite().getClient().getId(),
+                report.getSite().getClient().getRole());
         
-       Map<String, String> additionalParams = new HashMap<>();
-       additionalParams.put("siteId", String.valueOf(report.getSite().getId()));
+        Map<String, String> additionalParams = new HashMap<>();
+        additionalParams.put("siteId", String.valueOf(report.getSite().getId()));
         
-       if(clientToken != null)
-           notificationService.sendMessage(clientToken.getToken(), report.getNature(), report.getDescription(), additionalParams);
+        if(clientToken != null)
+            notificationService.sendMessage(clientToken.getToken(), report.getNature(), report.getDescription(), additionalParams);
 
     //    for(Token token : tokenList)
     //    {
     //        notificationService.sendMessage(token.getToken(), report.getNature(), report.getDescription());
     //    }
 
-        for(String url: reportRequest.getUrls())
+        String[] urls = reportRequest.getUrls();
+        String[] titles = reportRequest.getTitles();
+
+        for(int i = 0; i < urls.length; i++)
         { 
             ReportPhoto reportPhoto = new ReportPhoto();
             reportPhoto.setReport(reportRepository.findById(updateReport.getId()).get());
-            reportPhoto.setUrl(url);
+            reportPhoto.setUrl(urls[i]);
+            reportPhoto.setTitle(titles[i]);
             reportPhotoRepository.save(reportPhoto);
         }
         return updateReport;

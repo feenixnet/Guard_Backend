@@ -23,4 +23,5 @@ public class ReportPhoto {
     private Report report;
 
     private String url;
+    private String title;
 }

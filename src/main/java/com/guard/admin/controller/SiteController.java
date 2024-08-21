@@ -4,8 +4,6 @@ import com.guard.admin.payload.response.ApiResponse;
 import com.guard.admin.payload.response.PhotoResponse;
 import com.guard.admin.payload.response.ReportResponse;
 import com.guard.admin.payload.response.VisitorResponse;
-import com.google.firebase.messaging.FirebaseMessaging;
-import com.guard.admin.database.entities.Client;
 import com.guard.admin.database.entities.Photo;
 import com.guard.admin.database.entities.Visitor;
 import com.guard.admin.database.repositories.GuardRepository;
@@ -40,8 +38,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.guard.admin.service.declaration.SiteService;
 import com.guard.admin.service.declaration.VisitorService;
 
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.FirebaseOptions;
 
 import java.util.ArrayList;
 

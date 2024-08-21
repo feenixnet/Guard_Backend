@@ -56,10 +56,11 @@ public class PhotoServiceImpl implements PhotoService {
         List<PhotoResponse> photoResponses = new ArrayList<>();
         for(Photo photo : page)
         {
-            PhotoResponse photoResponse = new PhotoResponse();
-            photoResponse.setPhoto(photo);
-
-            photoResponses.add(photoResponse);
+            if(!photo.getUrl().contains("Tsignature")){
+                PhotoResponse photoResponse = new PhotoResponse();
+                photoResponse.setPhoto(photo);
+                photoResponses.add(photoResponse);
+            }
         }
         return photoResponses;
     }

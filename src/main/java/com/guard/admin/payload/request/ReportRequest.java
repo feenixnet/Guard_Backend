@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 public class ReportRequest {
     private String[] urls;
+    private String[] titles;
     private Integer siteId;
     private String nature;
     private String description;

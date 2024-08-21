@@ -29,4 +29,5 @@ public class Photo {
 
     private String url;
     private Date timestamp;
+    private String title;
 }
