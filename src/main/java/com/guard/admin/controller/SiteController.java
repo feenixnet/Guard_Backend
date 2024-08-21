@@ -186,6 +186,7 @@ public class SiteController {
                     photo.setGuard(guardRepository.findById(userDetails.getId()).get());
                     photo.setTimestamp(new Date());
                     photo.setUrl(fileName);
+                    photo.setTitle(fileRequest.getTitle());
                     photoRepository.save(photo);
                     photoList.add(photo);
                 }
