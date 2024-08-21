@@ -59,7 +59,7 @@ public class SettingController {
 
     @Operation(summary = "Save reported Bug",
             description = "Save reported Bug", tags = { "Setting Management" })
-    @PutMapping("/")
+    @PutMapping("/bugs")
     public ResponseEntity<ApiResponse<?>> ReportBug(   
         @ModelAttribute String bugText) {
         try{
