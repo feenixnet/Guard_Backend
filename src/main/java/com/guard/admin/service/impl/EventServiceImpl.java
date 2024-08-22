@@ -97,7 +97,6 @@ public class EventServiceImpl implements EventService {
                 if (!search.isEmpty()) {
                     String likePattern = "%" + search + "%";
                     predicates.add(criteriaBuilder.or(
-                            criteriaBuilder.like(criteriaBuilder.lower(root.get("timestamp")), likePattern.toLowerCase()),
                             criteriaBuilder.like(criteriaBuilder.lower(root.get("action")), likePattern.toLowerCase()),
                             criteriaBuilder.like(criteriaBuilder.lower(root.get("description")), likePattern.toLowerCase())
                     ));

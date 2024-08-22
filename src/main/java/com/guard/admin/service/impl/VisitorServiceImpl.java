@@ -58,7 +58,6 @@ public class VisitorServiceImpl implements VisitorService {
                             criteriaBuilder.like(criteriaBuilder.lower(root.get("company")), likePattern.toLowerCase()),
                             criteriaBuilder.like(criteriaBuilder.lower(root.get("phonenumber")), likePattern.toLowerCase()),
                             criteriaBuilder.like(criteriaBuilder.lower(root.get("reason")), likePattern.toLowerCase()),
-                            criteriaBuilder.like(criteriaBuilder.lower(root.get("timestamp")), likePattern.toLowerCase()),
                             criteriaBuilder.like(criteriaBuilder.lower(root.get("licenseplate")), likePattern.toLowerCase())
                     ));
                 }

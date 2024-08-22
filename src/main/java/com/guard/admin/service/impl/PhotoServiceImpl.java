@@ -51,7 +51,6 @@ public class PhotoServiceImpl implements PhotoService {
                 if (!search.isEmpty()) {
                     String likePattern = "%" + search + "%";
                     predicates.add(criteriaBuilder.or(
-                            criteriaBuilder.like(criteriaBuilder.lower(root.get("timestamp")), likePattern.toLowerCase()),
                             criteriaBuilder.like(criteriaBuilder.lower(root.get("title")), likePattern.toLowerCase())
                     ));
                 }
