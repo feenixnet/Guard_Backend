@@ -30,7 +30,7 @@ public class PhotoServiceImpl implements PhotoService {
     SiteRepository siteRepository;
 
     @Override
-    public List<PhotoResponse> getPage(Integer siteId, Integer guardId, int pageNum, int pageSize, String search Date startDate, Date endDate) {
+    public List<PhotoResponse> getPage(Integer siteId, Integer guardId, int pageNum, int pageSize, String search, Date startDate, Date endDate) {
         Pageable pageable = PageRequest.of(pageNum, pageSize, Sort.by(Sort.Direction.DESC, "timestamp"));
         Specification<Photo> specification = (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
