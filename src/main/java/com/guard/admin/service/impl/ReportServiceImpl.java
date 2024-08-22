@@ -141,9 +141,9 @@ public class ReportServiceImpl implements ReportService {
                     String likePattern = "%" + search + "%";
                     predicates.add(criteriaBuilder.or(
                             criteriaBuilder.like(criteriaBuilder.lower(root.get("nature")), likePattern.toLowerCase()),
-                            criteriaBuilder.like(criteriaBuilder.lower(root.get("other_involved")), likePattern.toLowerCase()),
-                            criteriaBuilder.like(criteriaBuilder.lower(root.get("police_case_number")), likePattern.toLowerCase()),
-                            criteriaBuilder.like(criteriaBuilder.lower(root.get("police_officer_contact_details")), likePattern.toLowerCase()),
+                            criteriaBuilder.like(criteriaBuilder.lower(root.get("otherInvolved")), likePattern.toLowerCase()),
+                            criteriaBuilder.like(criteriaBuilder.lower(root.get("policeCaseNumber")), likePattern.toLowerCase()),
+                            criteriaBuilder.like(criteriaBuilder.lower(root.get("policeOfficerContactDetails")), likePattern.toLowerCase()),
                             criteriaBuilder.like(criteriaBuilder.lower(root.get("description")), likePattern.toLowerCase())
                     ));
                 }
