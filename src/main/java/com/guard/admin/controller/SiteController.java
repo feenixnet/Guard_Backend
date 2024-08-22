@@ -338,7 +338,7 @@ public class SiteController {
         description = "Get Report History For the specific site ( Guard cannot get it. ) ", tags = { "Site Management" })
     @GetMapping("/reports/{siteId}")
     public ResponseEntity<ApiResponse<List<ReportResponse>>> getReports(
-        @PathVariable Integer siteId
+        @PathVariable(required = false) Integer siteId
         , @RequestParam Integer pageNum
         , @RequestParam Integer pageSize
         , @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate
