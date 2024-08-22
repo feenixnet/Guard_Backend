@@ -251,9 +251,9 @@ public class SiteController {
 
     @Operation(summary = "Get visitors for site",
             description = "Get Visitors for site", tags = {"Site Management"})
-    @GetMapping("/visitors/{siteId}")
+    @GetMapping("/visitors")
     public ResponseEntity<ApiResponse<List<VisitorResponse>>> getVisitors(
-        @PathVariable Integer siteId
+        @RequestParam(required = false) Integer siteId
         , @RequestParam Integer pageNum
         , @RequestParam Integer pageSize
         , @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate
@@ -277,9 +277,9 @@ public class SiteController {
     
      @Operation(summary = "Get photos for site",
             description = "Get Photos for site", tags = {"Site Management"})
-    @GetMapping("/photos/{siteId}")
+    @GetMapping("/photos")
     public ResponseEntity<ApiResponse<List<PhotoResponse>>> getPhotos(
-        @PathVariable Integer siteId
+        @RequestParam(required = false) Integer siteId
         , @RequestParam Integer pageNum
         , @RequestParam Integer pageSize
         , @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate
@@ -336,9 +336,9 @@ public class SiteController {
 
     @Operation(summary = "Get Report History",
         description = "Get Report History For the specific site ( Guard cannot get it. ) ", tags = { "Site Management" })
-    @GetMapping("/reports/{siteId}")
+    @GetMapping("/reports")
     public ResponseEntity<ApiResponse<List<ReportResponse>>> getReports(
-        @PathVariable(required = false) Integer siteId
+        @RequestParam(required = false) Integer siteId
         , @RequestParam Integer pageNum
         , @RequestParam Integer pageSize
         , @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate
