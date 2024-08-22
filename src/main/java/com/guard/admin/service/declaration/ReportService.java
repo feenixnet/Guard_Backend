@@ -11,7 +11,7 @@ public interface ReportService {
 
     Report create(ReportRequest reportRequest, Integer guardId) throws IOException ;
 
-    List<ReportResponse> getPage(Integer siteId, Integer userId, int pageNum, int pageSize, Date startDate, Date endDate, Integer clientId);
+    List<ReportResponse> getPage(Integer siteId, Integer userId, int pageNum, int pageSize, String search, Date startDate, Date endDate, Integer clientId);
 
     boolean approveReport(Integer reportId, Integer userId, boolean isApporved);
 }

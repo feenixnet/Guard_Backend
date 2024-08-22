@@ -33,7 +33,7 @@ public class VisitorServiceImpl implements VisitorService {
     SiteRepository siteRepository;
 
     @Override
-    public List<VisitorResponse> getPage(Integer siteId, Integer guardId, int pageNum, int pageSize, Date startDate, Date endDate) {
+    public List<VisitorResponse> getPage(Integer siteId, Integer guardId, int pageNum, int pageSize, String search, Date startDate, Date endDate) {
         Pageable pageable = PageRequest.of(pageNum, pageSize, Sort.by(Sort.Direction.DESC, "timestamp"));
         Specification<Visitor> specification = (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
@@ -49,6 +49,19 @@ public class VisitorServiceImpl implements VisitorService {
             }
             if (endDate != null) {
                 predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("timestamp"), endDate));
+            }
+            if(search != null) {
+                if (!search.isEmpty()) {
+                    String likePattern = "%" + search + "%";
+                    predicates.add(criteriaBuilder.or(
+                            criteriaBuilder.like(criteriaBuilder.lower(root.get("fullname")), likePattern.toLowerCase()),
+                            criteriaBuilder.like(criteriaBuilder.lower(root.get("company")), likePattern.toLowerCase()),
+                            criteriaBuilder.like(criteriaBuilder.lower(root.get("phonenumber")), likePattern.toLowerCase()),
+                            criteriaBuilder.like(criteriaBuilder.lower(root.get("reason")), likePattern.toLowerCase()),
+                            criteriaBuilder.like(criteriaBuilder.lower(root.get("timestamp")), likePattern.toLowerCase()),
+                            criteriaBuilder.like(criteriaBuilder.lower(root.get("licenseplate")), likePattern.toLowerCase())
+                    ));
+                }
             }
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };

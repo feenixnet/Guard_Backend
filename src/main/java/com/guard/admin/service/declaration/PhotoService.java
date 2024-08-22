@@ -7,5 +7,5 @@ import java.util.Date;
 import java.util.List;
 
 public interface PhotoService {
-    List<PhotoResponse> getPage(Integer siteId, Integer guardId, int pageNum, int pageSize, Date startDate, Date endDate);
+    List<PhotoResponse> getPage(Integer siteId, Integer guardId, int pageNum, int pageSize, String search, Date startDate, Date endDate);
 }

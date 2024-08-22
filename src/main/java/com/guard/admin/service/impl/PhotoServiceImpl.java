@@ -30,7 +30,7 @@ public class PhotoServiceImpl implements PhotoService {
     SiteRepository siteRepository;
 
     @Override
-    public List<PhotoResponse> getPage(Integer siteId, Integer guardId, int pageNum, int pageSize, Date startDate, Date endDate) {
+    public List<PhotoResponse> getPage(Integer siteId, Integer guardId, int pageNum, int pageSize, String search Date startDate, Date endDate) {
         Pageable pageable = PageRequest.of(pageNum, pageSize, Sort.by(Sort.Direction.DESC, "timestamp"));
         Specification<Photo> specification = (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
@@ -46,6 +46,15 @@ public class PhotoServiceImpl implements PhotoService {
             }
             if (endDate != null) {
                 predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("timestamp"), endDate));
+            }
+            if(search != null) {
+                if (!search.isEmpty()) {
+                    String likePattern = "%" + search + "%";
+                    predicates.add(criteriaBuilder.or(
+                            criteriaBuilder.like(criteriaBuilder.lower(root.get("timestamp")), likePattern.toLowerCase()),
+                            criteriaBuilder.like(criteriaBuilder.lower(root.get("title")), likePattern.toLowerCase())
+                    ));
+                }
             }
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };

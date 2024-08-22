@@ -44,6 +44,7 @@ public class EventController {
     @GetMapping("/")
     public ResponseEntity<ApiResponse<?>> get(
             @RequestParam(required = false) Integer siteId,
+            @RequestParam(required = false) String search,
             @RequestParam Integer pageNum,
             @RequestParam Integer pageSize,
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate,
@@ -55,12 +56,12 @@ public class EventController {
         UserDetailsImpl userDetails = authService.getInfo();
         if(!userDetails.getRole().equals(Role.guard)) {
             if(siteId != null)
-                return ResponseEntity.ok(new ApiResponse<>(eventService.getPage(siteId,null, null, pageNum, pageSize, startDate, endDate)));
+                return ResponseEntity.ok(new ApiResponse<>(eventService.getPage(siteId,null, null,  pageNum, pageSize, search, startDate, endDate)));
             else if(userDetails.getRole().equals(Role.admin))
-                return ResponseEntity.ok(new ApiResponse<>(eventService.getPage(null, null, null, pageNum, pageSize, startDate, endDate)));
-            else return ResponseEntity.ok(new ApiResponse<>(eventService.getPage(null, userDetails.getId(), null, pageNum, pageSize, startDate, endDate)));
+                return ResponseEntity.ok(new ApiResponse<>(eventService.getPage(null, null, null, pageNum, pageSize, search, startDate, endDate)));
+            else return ResponseEntity.ok(new ApiResponse<>(eventService.getPage(null, userDetails.getId(), null, pageNum, pageSize, search,  startDate, endDate)));
         } else {
-            return ResponseEntity.ok(new ApiResponse<>(eventService.getPage(null, null , userDetails.getId(), pageNum, pageSize, startDate, endDate)));
+            return ResponseEntity.ok(new ApiResponse<>(eventService.getPage(null, null , userDetails.getId(), pageNum, pageSize, search,  startDate, endDate)));
         }
     }
 }

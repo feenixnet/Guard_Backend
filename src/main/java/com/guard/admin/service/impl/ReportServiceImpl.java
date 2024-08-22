@@ -117,7 +117,7 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public List<ReportResponse> getPage(Integer siteId, Integer userId, int pageNum, int pageSize, Date startDate, Date endDate, Integer clientId) {
+    public List<ReportResponse> getPage(Integer siteId, Integer userId, int pageNum, int pageSize, String search, Date startDate, Date endDate, Integer clientId) {
         Pageable pageable = PageRequest.of(pageNum, pageSize, Sort.by(Sort.Direction.DESC, "timestamp"));
         Specification<Report> specification = (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
@@ -136,6 +136,20 @@ public class ReportServiceImpl implements ReportService {
                 predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("timestamp"),startDate));
             if(endDate != null)
                 predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("timestamp"),endDate));
+            if(search != null) {
+                if (!search.isEmpty()) {
+                    String likePattern = "%" + search + "%";
+                    predicates.add(criteriaBuilder.or(
+                            criteriaBuilder.like(criteriaBuilder.lower(root.get("timestamp")), likePattern.toLowerCase()),
+                            criteriaBuilder.like(criteriaBuilder.lower(root.get("nature")), likePattern.toLowerCase()),
+                            criteriaBuilder.like(criteriaBuilder.lower(root.get("other_involved")), likePattern.toLowerCase()),
+                            criteriaBuilder.like(criteriaBuilder.lower(root.get("police_case_number")), likePattern.toLowerCase()),
+                            criteriaBuilder.like(criteriaBuilder.lower(root.get("police_officer_contact_details")), likePattern.toLowerCase()),
+                            criteriaBuilder.like(criteriaBuilder.lower(root.get("timestamp")), likePattern.toLowerCase()),
+                            criteriaBuilder.like(criteriaBuilder.lower(root.get("description")), likePattern.toLowerCase())
+                    ));
+                }
+            }
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
         Page<Report> page = reportRepository.findAll(specification, pageable);

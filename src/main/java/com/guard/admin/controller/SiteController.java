@@ -254,13 +254,14 @@ public class SiteController {
     @GetMapping("/visitors")
     public ResponseEntity<ApiResponse<List<VisitorResponse>>> getVisitors(
         @RequestParam(required = false) Integer siteId
+        , @RequestParam(required = false) String search
         , @RequestParam Integer pageNum
         , @RequestParam Integer pageSize
         , @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate
         , @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate 
     ) {
         return ResponseEntity
-                .ok(new ApiResponse<>(visitorService.getPage(siteId, null, pageNum, pageSize, startDate, endDate)));
+                .ok(new ApiResponse<>(visitorService.getPage(siteId, null, pageNum, pageSize, search, startDate, endDate)));
 
         // try{
         //     // UserDetailsImpl userDetails = authService.getInfo();
@@ -280,13 +281,14 @@ public class SiteController {
     @GetMapping("/photos")
     public ResponseEntity<ApiResponse<List<PhotoResponse>>> getPhotos(
         @RequestParam(required = false) Integer siteId
+        , @RequestParam(required = false) String search
         , @RequestParam Integer pageNum
         , @RequestParam Integer pageSize
         , @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate
         , @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate 
     ) {
         return ResponseEntity
-                .ok(new ApiResponse<>(photoService.getPage(siteId, null, pageNum, pageSize, startDate, endDate)));
+                .ok(new ApiResponse<>(photoService.getPage(siteId, null, pageNum, pageSize, search, startDate, endDate)));
         
         // try{
         //     // UserDetailsImpl userDetails = authService.getInfo();
@@ -339,6 +341,7 @@ public class SiteController {
     @GetMapping("/reports")
     public ResponseEntity<ApiResponse<List<ReportResponse>>> getReports(
         @RequestParam(required = false) Integer siteId
+        , @RequestParam(required = false) String search
         , @RequestParam Integer pageNum
         , @RequestParam Integer pageSize
         , @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate
@@ -347,12 +350,12 @@ public class SiteController {
         UserDetailsImpl userDetails = authService.getInfo();
         if (userDetails.getRole().equals(Role.admin)) {
             return ResponseEntity
-                    .ok(new ApiResponse<>(reportService.getPage(siteId, null, pageNum, pageSize, startDate, endDate, null)));
+                    .ok(new ApiResponse<>(reportService.getPage(siteId, null, pageNum, pageSize, search, startDate, endDate, null)));
         } else if (userDetails.getRole().equals(Role.client)) {
             Integer clientId = userDetails.getId();
             if (clientId == siteRepository.findById(siteId).get().getClient().getId()) {
                 return ResponseEntity.ok(
-                        new ApiResponse<>(reportService.getPage(siteId, null, pageNum, pageSize, startDate, endDate, clientId)));
+                        new ApiResponse<>(reportService.getPage(siteId, null, pageNum, pageSize, search, startDate, endDate, clientId)));
             }
         }
         // if(!userDetails.getRole().equals(Role.guard)) {
