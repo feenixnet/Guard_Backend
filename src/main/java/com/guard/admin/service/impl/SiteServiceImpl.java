@@ -2,10 +2,12 @@ package com.guard.admin.service.impl;
 
 import java.util.*;
 
+import com.guard.admin.database.entities.Area;
 import com.guard.admin.database.entities.HitPoints;
 import com.guard.admin.database.entities.Report;
 import com.guard.admin.database.entities.Shift;
 import com.guard.admin.database.entities.User;
+import com.guard.admin.database.repositories.AreaRepository;
 import com.guard.admin.database.repositories.HitPointRepository;
 import com.guard.admin.database.repositories.PhotoRepository;
 import com.guard.admin.database.repositories.ReportPhotoRepository;
@@ -59,6 +61,9 @@ public class SiteServiceImpl implements SiteService {
     @Autowired
     ReportPhotoRepository reportPhotoRepository;
 
+    @Autowired
+    AreaRepository areaRepository;
+
     @Override
     public SiteWithHitpoint getFull(Integer id) {
         SiteWithHitpoint siteWithHitpoint = new SiteWithHitpoint();
@@ -84,6 +89,12 @@ public class SiteServiceImpl implements SiteService {
         }
 
         return site;
+    }
+
+    @Override
+    public Area createArea(Area area) {
+        areaRepository.save(area);
+        return area;
     }
 
     @Override

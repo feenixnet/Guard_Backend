@@ -2,6 +2,7 @@ package com.guard.admin.service.declaration;
 
 import java.util.*;
 
+import com.guard.admin.database.entities.Area;
 import com.guard.admin.database.entities.Guard;
 import com.guard.admin.database.entities.HitPoints;
 import com.guard.admin.database.entities.Shift;
@@ -17,6 +18,8 @@ public interface SiteService {
     Site getSite(Integer id) ;
 
     SiteWithHitpoint create(SiteWithHitpoint site) ;
+
+    Area createArea(Area area);
 
     SiteWithHitpoint update(Integer id, SiteWithHitpoint site) ;
 

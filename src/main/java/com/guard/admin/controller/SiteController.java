@@ -4,6 +4,7 @@ import com.guard.admin.payload.response.ApiResponse;
 import com.guard.admin.payload.response.PhotoResponse;
 import com.guard.admin.payload.response.ReportResponse;
 import com.guard.admin.payload.response.VisitorResponse;
+import com.guard.admin.database.entities.Area;
 import com.guard.admin.database.entities.Photo;
 import com.guard.admin.database.entities.Visitor;
 import com.guard.admin.database.repositories.GuardRepository;
@@ -87,6 +88,21 @@ public class SiteController {
             UserDetailsImpl userDetails = authService.getInfo();
             if(userDetails.getRole().equals(Role.admin) || userDetails.getRole().equals(Role.branch)) {
                 return ResponseEntity.ok(new ApiResponse<>(siteService.create(site)));
+            }
+            return ResponseEntity.badRequest().body(new ApiResponse<>("You don't have permission to do this action!"));
+        } catch(Exception e) {
+            return ResponseEntity.badRequest().body(new ApiResponse<>(e.getMessage()));}
+    }
+
+        
+    @Operation(summary = "Create Area",
+            description = "Create a new Area (Admin and Area) ", tags = { "Area Management" })
+    @PostMapping("/area")
+    public ResponseEntity<ApiResponse<?>> addArea(@RequestBody Area area) {
+        try{
+            UserDetailsImpl userDetails = authService.getInfo();
+            if(userDetails.getRole().equals(Role.admin)) {
+                return ResponseEntity.ok(new ApiResponse<>(siteService.createArea(area)));
             }
             return ResponseEntity.badRequest().body(new ApiResponse<>("You don't have permission to do this action!"));
         } catch(Exception e) {
