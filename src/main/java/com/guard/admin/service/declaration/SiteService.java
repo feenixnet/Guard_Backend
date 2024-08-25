@@ -21,7 +21,13 @@ public interface SiteService {
 
     Area createArea(Area area);
 
-    SiteWithHitpoint update(Integer id, SiteWithHitpoint site) ;
+    void deleteArea(Integer id);
+
+    List<Area> getAllArea();
+
+    Area updateArea(Area area);
+
+    SiteWithHitpoint update(Integer id, SiteWithHitpoint site);
 
     void delete(Integer id);
 

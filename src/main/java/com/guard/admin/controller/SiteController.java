@@ -109,6 +109,44 @@ public class SiteController {
             return ResponseEntity.badRequest().body(new ApiResponse<>(e.getMessage()));}
     }
 
+    @Operation(summary = "Get Area",
+    description = "Get Areas", tags = { "Area Management" })
+    @GetMapping("/area")
+    public ResponseEntity<ApiResponse<?>> getArea() {
+        try {
+            return ResponseEntity.ok(new ApiResponse<>(siteService.getAllArea()));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new ApiResponse<>(e.getMessage()));
+        }
+    }
+
+    @Operation(summary = "Update Area",
+            description = "Update Area", tags = { "Area Management" })
+    @PutMapping("/area/{id}")
+    public ResponseEntity<ApiResponse<?>> updateArea(@RequestBody Area area) {
+        try{
+            UserDetailsImpl userDetails = authService.getInfo();
+            if(userDetails.getRole().equals(Role.admin)) {
+                return ResponseEntity.ok(new ApiResponse<>(siteService.updateArea(area)));
+            }
+            return ResponseEntity.badRequest().body(new ApiResponse<>("You don't have permission to do this action!"));
+        } catch(Exception e) {
+            return ResponseEntity.badRequest().body(new ApiResponse<>(e.getMessage()));}
+    }
+
+
+    @Operation(summary = "Delete Area",
+    description = "Delete an area", tags = { "Area Management" })
+    @DeleteMapping("/area/{id}")
+    public ResponseEntity<ApiResponse<?>> deleteArea(@PathVariable Integer id) {
+        try {
+            siteService.deleteArea(id);
+            return ResponseEntity.ok(new ApiResponse<>(""));
+        } catch (Exception e) {
+        return ResponseEntity.badRequest().body(new ApiResponse<>(e.getMessage()));
+        }
+    }
+
     @Operation(summary = "Delete Site",
             description = "Delete the Site from the Site List (Admin, Branch manager)", tags = { "Site Management" })
     @DeleteMapping("/{id}")

@@ -98,6 +98,22 @@ public class SiteServiceImpl implements SiteService {
     }
 
     @Override
+    public List<Area> getAllArea() {
+        return areaRepository.findAll();
+    }
+
+    @Override
+    public void deleteArea(Integer id) {
+        areaRepository.deleteById(id);
+    }
+
+    @Override
+    public Area updateArea(Area area) {
+        areaRepository.save(area);
+        return area;
+    }
+
+    @Override
     @Transactional
     public SiteWithHitpoint update(Integer id, SiteWithHitpoint site) {
         Site siteDetail = site.getSite();
