@@ -8,7 +8,7 @@ import com.guard.admin.database.entities.HitPoints;
 import com.guard.admin.database.entities.Shift;
 import com.guard.admin.payload.response.DataTableResponse;
 import com.guard.admin.payload.dto.SiteWithHitpoint;
-
+import com.guard.admin.payload.request.AreaCarRequest;
 import com.guard.admin.database.entities.Site;
 
 public interface SiteService {
@@ -30,6 +30,8 @@ public interface SiteService {
     SiteWithHitpoint update(Integer id, SiteWithHitpoint site);
 
     void delete(Integer id);
+
+    void changeCar(AreaCarRequest arCar);
 
     List<HitPoints> getHitPoints(Integer id);
 

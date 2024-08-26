@@ -12,6 +12,7 @@ import com.guard.admin.database.repositories.PhotoRepository;
 import com.guard.admin.database.repositories.SiteRepository;
 import com.guard.admin.database.repositories.VisitorRepository;
 import com.guard.admin.payload.dto.SiteWithHitpoint;
+import com.guard.admin.payload.request.AreaCarRequest;
 import com.guard.admin.payload.request.FileRequest;
 import com.guard.admin.payload.request.ReportRequest;
 import com.guard.admin.payload.request.VisitorRequest;
@@ -128,6 +129,23 @@ public class SiteController {
             UserDetailsImpl userDetails = authService.getInfo();
             if(userDetails.getRole().equals(Role.admin)) {
                 return ResponseEntity.ok(new ApiResponse<>(siteService.updateArea(area)));
+            }
+            return ResponseEntity.badRequest().body(new ApiResponse<>("You don't have permission to do this action!"));
+        } catch(Exception e) {
+            return ResponseEntity.badRequest().body(new ApiResponse<>(e.getMessage()));}
+    }
+
+    @Operation(summary = "Car & Site > Area",
+            description = "Car & Site > Area", tags = { "Area Management" })
+    @PostMapping("/area/car-site")
+    public ResponseEntity<ApiResponse<?>> updateCarInSite(@RequestBody AreaCarRequest arCar) {
+        try{
+            UserDetailsImpl userDetails = authService.getInfo();
+            if(userDetails.getRole().equals(Role.admin)) {
+                System.out.println("Request!!!");
+                System.out.println(arCar);
+                siteService.changeCar(arCar);
+                return ResponseEntity.ok(new ApiResponse<>("")); 
             }
             return ResponseEntity.badRequest().body(new ApiResponse<>("You don't have permission to do this action!"));
         } catch(Exception e) {

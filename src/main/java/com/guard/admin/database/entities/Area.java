@@ -16,5 +16,6 @@ public class Area {
 
     private String name;
     private String siteIds;
+    private Integer carId;
 
 }
