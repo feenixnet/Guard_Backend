@@ -90,14 +90,14 @@ public class EventServiceImpl implements EventService {
             if (guardId != null)
                 predicates.add(criteriaBuilder.equal(root.get("guardId"), guardId));
             if(clientId != null)
-                {
-                    List<Site> siteList = siteRepository.findAllByClientId(clientId);
-                    List<Integer> siteIds = siteList.stream()
-                            .map(Site::getId)
-                            .toList();
-                    predicates.add(root.get("siteId").in(siteIds));
-                    predicates.add(root.get("site").in(siteList));
-                }   
+            {
+                List<Site> siteList = siteRepository.findAllByClientId(clientId);
+                List<Integer> siteIds = siteList.stream()
+                        .map(Site::getId)
+                        .toList();
+                predicates.add(root.get("siteId").in(siteIds));
+                // predicates.add(root.get("site").in(siteList));
+            }   
             if (startDate != null)
                 predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("timestamp"), startDate));
             if (endDate != null)
