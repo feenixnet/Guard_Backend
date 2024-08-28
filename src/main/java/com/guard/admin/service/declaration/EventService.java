@@ -9,5 +9,5 @@ public interface EventService {
 
     Event create(Event event);
 
-    List<Event> getPage(Integer siteId, Integer userId, Integer guardId , int pageNum, int pageSize, String search, Date startDate, Date endDate);
+    List<Event> getPage(Integer siteId, Integer userId, Integer clientId, Integer guardId , int pageNum, int pageSize, String search, Date startDate, Date endDate);
 }

@@ -73,7 +73,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<Event> getPage(Integer siteId, Integer userId, Integer guardId, int pageNum, int pageSize, String search, Date startDate, Date endDate) {
+    public List<Event> getPage(Integer siteId, Integer userId, Integer clientId, Integer guardId, int pageNum, int pageSize, String search, Date startDate, Date endDate) {
         Pageable pageable = PageRequest.of(pageNum, pageSize, Sort.by(Sort.Direction.DESC, "timestamp"));
         Specification<Event> specification = (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
@@ -89,6 +89,15 @@ public class EventServiceImpl implements EventService {
                 predicates.add(criteriaBuilder.equal(root.get("siteId"), siteId));
             if (guardId != null)
                 predicates.add(criteriaBuilder.equal(root.get("guardId"), guardId));
+            if(clientId != null)
+                {
+                    List<Site> siteList = siteRepository.findAllByClientId(clientId);
+                    List<Integer> siteIds = siteList.stream()
+                            .map(Site::getId)
+                            .toList();
+                    predicates.add(root.get("siteId").in(siteIds));
+                    predicates.add(root.get("site").in(siteList));
+                }   
             if (startDate != null)
                 predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("timestamp"), startDate));
             if (endDate != null)
