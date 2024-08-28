@@ -103,7 +103,7 @@ public class GuardController {
             if (userDetails.getRole().equals(Role.admin) || userDetails.getRole().equals(Role.area) || userDetails.getRole().equals(Role.dispatch))
                 return ResponseEntity.ok(new ApiResponse<>(guardService.getByType(type)));
         } else {
-            if (userDetails.getRole().equals(Role.admin))
+            if (userDetails.getRole().equals(Role.admin) || userDetails.getRole().equals(Role.client))
                 return ResponseEntity.ok(new ApiResponse<>(guardService.getAll()));
             else if (userDetails.getRole().equals(Role.branch) || userDetails.getRole().equals(Role.area))
                 return ResponseEntity.ok(new ApiResponse<>(guardService.getByUserId(userDetails.getId())));
