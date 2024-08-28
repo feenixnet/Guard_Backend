@@ -134,10 +134,12 @@ public class SiteController {
         if(pageNum != null) {
             if(userDetails.getRole().equals(Role.admin))
             {
-                return ResponseEntity.ok(new ApiResponse<>(siteService.getPage(pageNum, pageLength, search, 0)));
+                return ResponseEntity.ok(new ApiResponse<>(siteService.getPage(pageNum, pageLength, search, null)));
             }
             else if(userDetails.getRole().equals(Role.branch) || userDetails.getRole().equals(Role.area)) {
-                return ResponseEntity.ok(new ApiResponse<>(siteService.getPage(pageNum, pageLength, search, userDetails.getId())));
+                return ResponseEntity.ok(new ApiResponse<>(siteService.getPage(pageNum, pageLength, search, userDetails)));
+            }else if(userDetails.getRole().equals(Role.client) ) {
+                return ResponseEntity.ok(new ApiResponse<>(siteService.getPage(pageNum, pageLength, search, userDetails)));
             }
         }
         else {

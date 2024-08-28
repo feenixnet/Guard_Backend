@@ -2,6 +2,7 @@ package com.guard.admin.service.impl;
 
 import java.util.*;
 
+import com.guard.admin.database.entities.Client;
 import com.guard.admin.database.entities.HitPoints;
 import com.guard.admin.database.entities.Report;
 import com.guard.admin.database.entities.Shift;
@@ -185,7 +186,7 @@ public class SiteServiceImpl implements SiteService {
     }
 
     @Override
-    public DataTableResponse<SiteWithHitpoint> getPage(Integer pageNum, Integer pageLength, String search, Integer userId) {
+    public DataTableResponse<SiteWithHitpoint> getPage(Integer pageNum, Integer pageLength, String search, UserDetailsImpl userDetail) {
 
         int pageNumber = pageNum;
         int pageSize = pageLength;
@@ -206,9 +207,14 @@ public class SiteServiceImpl implements SiteService {
                     ));
                 }
             }
-            if(!userId.equals(0)) {
-                Join<Site, User> userJoin = root.join("user");
-                predicates.add(criteriaBuilder.equal(userJoin.get("id"), userId));
+            if(userDetail !=  null){
+                if(userDetail.getRole() == ""){
+                    Join<Site, User> userJoin = root.join("user");
+                    predicates.add(criteriaBuilder.equal(userJoin.get("id"), userDetail.getId()));
+                } else {
+                    Join<Site, Client> userJoin = root.join("client");
+                    predicates.add(criteriaBuilder.equal(userJoin.get("id"), userDetail.getId()));
+                }
             }
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
@@ -227,6 +233,6 @@ public class SiteServiceImpl implements SiteService {
         int intpageFiltered;
         intpageFiltered = (int) pagefiltered;
 
-        return new DataTableResponse<>( 1 , (int)siteRepository.countByUserId(userId) , intpageFiltered , bigData , "name");
+        return new DataTableResponse<>( 1 , (int)siteRepository.countByUserId(userDetail.getId()) , intpageFiltered , bigData , "name");
     }
 }
