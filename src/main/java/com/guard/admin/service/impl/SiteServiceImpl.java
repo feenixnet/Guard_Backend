@@ -3,10 +3,13 @@ package com.guard.admin.service.impl;
 import java.util.*;
 
 import com.guard.admin.database.entities.Client;
+import com.guard.admin.database.entities.Area;
 import com.guard.admin.database.entities.HitPoints;
 import com.guard.admin.database.entities.Report;
 import com.guard.admin.database.entities.Shift;
 import com.guard.admin.database.entities.User;
+import com.guard.admin.database.repositories.AreaRepository;
+import com.guard.admin.database.repositories.CarRepository;
 import com.guard.admin.database.repositories.HitPointRepository;
 import com.guard.admin.database.repositories.PhotoRepository;
 import com.guard.admin.database.repositories.ReportPhotoRepository;
@@ -15,11 +18,13 @@ import com.guard.admin.database.repositories.ScheduleRepository;
 import com.guard.admin.database.repositories.ShiftRepository;
 import com.guard.admin.payload.response.DataTableResponse;
 import com.guard.admin.payload.dto.SiteWithHitpoint;
+import com.guard.admin.payload.request.AreaCarRequest;
 import com.guard.admin.service.declaration.SiteService;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.validation.OverridesAttribute;
 
+import org.antlr.v4.runtime.misc.IntegerList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -28,6 +33,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.guard.admin.database.entities.Site;
+import com.guard.admin.database.entities.Car;
 import com.guard.admin.database.repositories.SiteRepository;
 import com.guard.admin.database.repositories.VisitorRepository;
 
@@ -60,6 +66,12 @@ public class SiteServiceImpl implements SiteService {
     @Autowired
     ReportPhotoRepository reportPhotoRepository;
 
+    @Autowired
+    AreaRepository areaRepository;
+
+    @Autowired
+    CarRepository carRepository;
+
     @Override
     public SiteWithHitpoint getFull(Integer id) {
         SiteWithHitpoint siteWithHitpoint = new SiteWithHitpoint();
@@ -85,6 +97,62 @@ public class SiteServiceImpl implements SiteService {
         }
 
         return site;
+    }
+
+    @Override
+    public Area createArea(Area area) {
+        areaRepository.save(area);
+        return area;
+    }
+
+    @Override
+    public List<Area> getAllArea() {
+        return areaRepository.findAll();
+    }
+
+    @Override
+    public void deleteArea(Integer id) {
+        areaRepository.deleteById(id);
+    }
+
+    @Override
+    public Area updateArea(Area area) {
+        areaRepository.save(area);
+        return area;
+    }
+
+    @Override
+    public void changeCar(AreaCarRequest arCar) {
+        Car car = carRepository.findById(arCar.getId()).get();
+        // for(int i = 0; i < areaRepository.findAll().size(); i ++) {
+        //     Area area = areaRepository.findAll().get(i);
+        //     area.setCarId(null);
+        //     areaRepository.save(area);
+        // }
+        // for(int i = 0; i < siteRepository.findAll().size(); i ++ ) {
+        //     Site site = siteRepository.findAll().get(i);
+        //     site.setCar(null);
+        //     siteRepository.save(site);
+        // }
+        for(int i = 0; i < arCar.getAreaList().size(); i ++ ) {
+            Integer areaId = arCar.getAreaList().get(i);
+            Area area = areaRepository.findById(areaId).get();
+            if(area != null) {
+                area.setCarId(arCar.getId());
+            }
+            areaRepository.save(area);
+            List<String> siteIds = Arrays.asList(area.getSiteIds().split(","));
+            siteIds.forEach(siteId -> {
+                Site site = siteRepository.findById(Integer.parseInt(siteId)).get();
+                site.setCar(car);
+                siteRepository.save(site);
+            });
+        }
+        arCar.getSiteList().forEach(siteId -> {
+            Site site = siteRepository.findById(siteId).get();
+            site.setCar(car);
+            siteRepository.save(site);
+        });
     }
 
     @Override
