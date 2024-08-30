@@ -202,30 +202,34 @@ public class SiteController {
             , @RequestParam(required = false) Integer pageLength
             , @RequestParam(required = false) String search
     ) {
-        UserDetailsImpl userDetails = authService.getInfo();
-        if(pageNum != null) {
-            if(userDetails.getRole().equals(Role.admin))
-            {
-                return ResponseEntity.ok(new ApiResponse<>(siteService.getPage(pageNum, pageLength, search, null)));
+        try{
+            UserDetailsImpl userDetails = authService.getInfo();
+            if(pageNum != null) {
+                if(userDetails.getRole().equals(Role.admin))
+                {
+                    return ResponseEntity.ok(new ApiResponse<>(siteService.getPage(pageNum, pageLength, search, null)));
+                }
+                else if(userDetails.getRole().equals(Role.branch) || userDetails.getRole().equals(Role.area)) {
+                    return ResponseEntity.ok(new ApiResponse<>(siteService.getPage(pageNum, pageLength, search, userDetails)));
+                }else if(userDetails.getRole().equals(Role.client) ) {
+                    return ResponseEntity.ok(new ApiResponse<>(siteService.getPage(pageNum, pageLength, search, userDetails)));
+                }
             }
-            else if(userDetails.getRole().equals(Role.branch) || userDetails.getRole().equals(Role.area)) {
-                return ResponseEntity.ok(new ApiResponse<>(siteService.getPage(pageNum, pageLength, search, userDetails)));
-            }else if(userDetails.getRole().equals(Role.client) ) {
-                return ResponseEntity.ok(new ApiResponse<>(siteService.getPage(pageNum, pageLength, search, userDetails)));
+            else {
+                if(userDetails.getRole().equals(Role.admin) ){
+                    return ResponseEntity.ok(new ApiResponse<>(siteService.getByAdmin()));
+                }
+                else if(userDetails.getRole().equals(Role.branch) || userDetails.getRole().equals(Role.area)) {
+                    return ResponseEntity.ok(new ApiResponse<>(siteService.getByUser(userDetails.getId())));
+                }
+                else if(userDetails.getRole().equals(Role.client)) {
+                    return ResponseEntity.ok(new ApiResponse<>(siteService.getByClient(userDetails.getId())));
+                }
             }
+            return ResponseEntity.badRequest().body(new ApiResponse<>("You don't have permission to do this action!"));
+        } catch(Exception e){
+            return ResponseEntity.badRequest().body(new ApiResponse<>(e.getMessage()));
         }
-        else {
-            if(userDetails.getRole().equals(Role.admin) ){
-                return ResponseEntity.ok(new ApiResponse<>(siteService.getByAdmin()));
-            }
-            else if(userDetails.getRole().equals(Role.branch) || userDetails.getRole().equals(Role.area)) {
-                return ResponseEntity.ok(new ApiResponse<>(siteService.getByUser(userDetails.getId())));
-            }
-            else if(userDetails.getRole().equals(Role.client)) {
-                return ResponseEntity.ok(new ApiResponse<>(siteService.getByClient(userDetails.getId())));
-            }
-        }
-        return ResponseEntity.badRequest().body(new ApiResponse<>("You don't have permission to do this action!"));
     }
 
     @Operation(summary = "Get Site",
