@@ -207,7 +207,7 @@ public class SiteController {
             if(pageNum != null) {
                 if(userDetails.getRole().equals(Role.admin))
                 {
-                    return ResponseEntity.ok(new ApiResponse<>(siteService.getPage(pageNum, pageLength, search, userDetails)));
+                    return ResponseEntity.ok(new ApiResponse<>(siteService.getPage(pageNum, pageLength, search, null)));
                 }
                 else if(userDetails.getRole().equals(Role.branch) || userDetails.getRole().equals(Role.area)) {
                     return ResponseEntity.ok(new ApiResponse<>(siteService.getPage(pageNum, pageLength, search, userDetails)));
