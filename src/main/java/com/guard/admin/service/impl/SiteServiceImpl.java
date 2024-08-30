@@ -297,10 +297,20 @@ public class SiteServiceImpl implements SiteService {
             bigData.add(getFull(site.getId()));
         }
 
-        long pagefiltered = page.getTotalElements();
-        int intpageFiltered;
-        intpageFiltered = (int) pagefiltered;
+        int pagefiltered = (int)page.getTotalElements();
+        int totalRecords = 0;
+        if(userDetail !=  null){
+            if(userDetail.getRole() == ""){
+                totalRecords = (int) siteRepository.countByUserId(userDetail.getId());
+            } else {
+                
+                totalRecords = (int) siteRepository.countByClientId(userDetail.getId());
+            }
+            
+        } else {
+            totalRecords = (int) siteRepository.count();
+        }
 
-        return new DataTableResponse<>( 1 , (int)siteRepository.countByUserId(userDetail.getId()) , intpageFiltered , bigData , "name");
+        return new DataTableResponse<>( 1 , totalRecords , pagefiltered , bigData , "name");
     }
 }

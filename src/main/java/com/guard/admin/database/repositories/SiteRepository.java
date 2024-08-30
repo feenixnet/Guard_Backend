@@ -21,4 +21,5 @@ public interface SiteRepository extends JpaRepository<Site, Integer> {
     List<Site> findAllByCarId(Integer id);
 
     long countByUserId(Integer id);
+    long countByClientId(Integer id);
 }
