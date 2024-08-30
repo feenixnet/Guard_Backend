@@ -49,157 +49,183 @@ public class AuthController {
 
     @PostMapping("staff/signin")
     public ResponseEntity<ApiResponse<?>> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+        try{
 
-        Authentication authentication = authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
+            Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = jwtUtils.generateJwtToken(authentication);
-        String refreshToken = jwtUtils.generateRefreshToken(authentication);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            String jwt = jwtUtils.generateJwtToken(authentication);
+            String refreshToken = jwtUtils.generateRefreshToken(authentication);
 
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
-        User user = userRepository.findById(userDetails.getId()).get();
+            User user = userRepository.findById(userDetails.getId()).get();
 
-        return ResponseEntity.ok(new ApiResponse<>(new JwtStaffResponse(jwt, refreshToken, user)));
+            return ResponseEntity.ok(new ApiResponse<>(new JwtStaffResponse(jwt, refreshToken, user)));
+        } catch(Exception e) {
+            return ResponseEntity.badRequest().body(new ApiResponse<>(e.getMessage()));}
     }
 
     @PostMapping("staff/me")
     public ResponseEntity<ApiResponse<?>> loginWithToken(HttpServletRequest request) {
+        try{
 
-        String accessToken = jwtTokenParser.parseJwt(request);
-        String email = jwtUtils.getEmailFromJwtToken(accessToken);
-        if (userRepository.existsByEmail(email)) {
-            User currentUser = userRepository.findByEmail(email).get();
-            return ResponseEntity.ok(new ApiResponse<>(currentUser));
-        }
-        else
-            return ResponseEntity
-            .badRequest()
-            .body(new ApiResponse<>("Error: Invalid Token !"));
+            String accessToken = jwtTokenParser.parseJwt(request);
+            String email = jwtUtils.getEmailFromJwtToken(accessToken);
+            if (userRepository.existsByEmail(email)) {
+                User currentUser = userRepository.findByEmail(email).get();
+                return ResponseEntity.ok(new ApiResponse<>(currentUser));
+            }
+            else
+                return ResponseEntity
+                .badRequest()
+                .body(new ApiResponse<>("Error: Invalid Token !"));
+        } catch(Exception e) {
+            return ResponseEntity.badRequest().body(new ApiResponse<>(e.getMessage()));}
     }
 
     @PostMapping("staff/refresh-token")
     public ResponseEntity<ApiResponse<?>> refresh(@RequestBody TokenRequest tokenRequest) {
+        try{
 
-        String accessToken = tokenRequest.getToken();
+            String accessToken = tokenRequest.getToken();
 
-        String email = jwtUtils.getEmailFromJwtToken(accessToken);
+            String email = jwtUtils.getEmailFromJwtToken(accessToken);
 
-        if (userRepository.existsByEmail(email)) {
+            if (userRepository.existsByEmail(email)) {
 
-            User currentUser = userRepository.findByEmail(email).get();
+                User currentUser = userRepository.findByEmail(email).get();
 
-            return ResponseEntity.ok(new ApiResponse<>(new TokenResponse(jwtUtils.generateAccessToken(currentUser.getEmail()))));
-        }
-        else
-            return ResponseEntity
-                    .badRequest()
-                    .body(new ApiResponse<>("Error: Invalid Token !"));
+                return ResponseEntity.ok(new ApiResponse<>(new TokenResponse(jwtUtils.generateAccessToken(currentUser.getEmail()))));
+            }
+            else
+                return ResponseEntity
+                        .badRequest()
+                        .body(new ApiResponse<>("Error: Invalid Token !"));
+        } catch(Exception e) {
+        return ResponseEntity.badRequest().body(new ApiResponse<>(e.getMessage()));}
     }
 
     @PostMapping("guard/signin")
     public ResponseEntity<ApiResponse<?>> authenticateGuard(@Valid @RequestBody LoginRequest loginRequest) {
 
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
+        try{
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = jwtUtils.generateJwtToken(authentication);
-        String refreshToken = jwtUtils.generateRefreshToken(authentication);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            String jwt = jwtUtils.generateJwtToken(authentication);
+            String refreshToken = jwtUtils.generateRefreshToken(authentication);
 
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
-        Guard guard = guardRepository.findById(userDetails.getId()).get();
+            Guard guard = guardRepository.findById(userDetails.getId()).get();
 
-    
-        System.out.println(guard.getEmail());
+        
+            System.out.println(guard.getEmail());
 
-        return ResponseEntity.ok(new ApiResponse<>(new JwtGuardResponse(jwt, refreshToken, guard)));
+            return ResponseEntity.ok(new ApiResponse<>(new JwtGuardResponse(jwt, refreshToken, guard)));
+        } catch(Exception e) {
+            return ResponseEntity.badRequest().body(new ApiResponse<>(e.getMessage()));}
     }
 
     @PostMapping("guard/me")
     public ResponseEntity<ApiResponse<?>> loginWithGuardToken(HttpServletRequest request) {
 
-        String accessToken = jwtTokenParser.parseJwt(request);
-        String email = jwtUtils.getEmailFromJwtToken(accessToken);
-        if (guardRepository.existsByEmail(email)) {
-            Guard currentUser = guardRepository.findByEmail(email).get();
-            return ResponseEntity.ok(new ApiResponse<>(currentUser));
-        }
-        else
-            return ResponseEntity
-                    .badRequest()
-                    .body(new ApiResponse<>("Error: Invalid Token !"));
+        try{
+            String accessToken = jwtTokenParser.parseJwt(request);
+            String email = jwtUtils.getEmailFromJwtToken(accessToken);
+            if (guardRepository.existsByEmail(email)) {
+                Guard currentUser = guardRepository.findByEmail(email).get();
+                return ResponseEntity.ok(new ApiResponse<>(currentUser));
+            }
+            else
+                return ResponseEntity
+                        .badRequest()
+                        .body(new ApiResponse<>("Error: Invalid Token !"));
+        } catch(Exception e) {
+            return ResponseEntity.badRequest().body(new ApiResponse<>(e.getMessage()));}
     }
 
     @PostMapping("guard/refresh-token")
     public ResponseEntity<ApiResponse<?>> guardRefresh(@RequestBody TokenRequest tokenRequest) {
 
-        String accessToken = tokenRequest.getToken();
+        try{
+            String accessToken = tokenRequest.getToken();
 
-        String email = jwtUtils.getEmailFromJwtToken(accessToken);
+            String email = jwtUtils.getEmailFromJwtToken(accessToken);
 
-        if (guardRepository.existsByEmail(email)) {
-            Guard currentGuard = guardRepository.findByEmail(email).get();
-            return ResponseEntity.ok(new ApiResponse<>(new TokenResponse(jwtUtils.generateAccessToken(currentGuard.getEmail()))));
-        }
-        else
-            return ResponseEntity
-                    .badRequest()
-                    .body(new ApiResponse<>("Error: Invalid Token !"));
+            if (guardRepository.existsByEmail(email)) {
+                Guard currentGuard = guardRepository.findByEmail(email).get();
+                return ResponseEntity.ok(new ApiResponse<>(new TokenResponse(jwtUtils.generateAccessToken(currentGuard.getEmail()))));
+            }
+            else
+                return ResponseEntity
+                        .badRequest()
+                        .body(new ApiResponse<>("Error: Invalid Token !"));
+        } catch(Exception e) {
+            return ResponseEntity.badRequest().body(new ApiResponse<>(e.getMessage()));}
     }
 
     @PostMapping("client/signin")
     public ResponseEntity<ApiResponse<?>> authenticateClient(@Valid @RequestBody LoginRequest loginRequest) {
 
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
+        try{
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = jwtUtils.generateJwtToken(authentication);
-        String refreshToken = jwtUtils.generateRefreshToken(authentication);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            String jwt = jwtUtils.generateJwtToken(authentication);
+            String refreshToken = jwtUtils.generateRefreshToken(authentication);
 
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
-        Client client = clientRepository.findById(userDetails.getId()).get();
+            Client client = clientRepository.findById(userDetails.getId()).get();
 
-        return ResponseEntity.ok(new ApiResponse<>(new JwtClientResponse(jwt, refreshToken, client)));
+            return ResponseEntity.ok(new ApiResponse<>(new JwtClientResponse(jwt, refreshToken, client)));
+        } catch(Exception e) {
+            return ResponseEntity.badRequest().body(new ApiResponse<>(e.getMessage()));}
     }
 
     @PostMapping("client/me")
     public ResponseEntity<ApiResponse<?>> loginWithClientToken(HttpServletRequest request) {
+        try{
+            String accessToken = jwtTokenParser.parseJwt(request);
 
-        String accessToken = jwtTokenParser.parseJwt(request);
+            String email = jwtUtils.getEmailFromJwtToken(accessToken);
 
-        String email = jwtUtils.getEmailFromJwtToken(accessToken);
+            if (clientRepository.existsByEmail(email)) {
 
-        if (clientRepository.existsByEmail(email)) {
+                Client currentUser = clientRepository.findByEmail(email).get();
 
-            Client currentUser = clientRepository.findByEmail(email).get();
-
-            return ResponseEntity.ok(new ApiResponse<>(currentUser));
-        }
-        else
-            return ResponseEntity
-                    .badRequest()
-                    .body(new ApiResponse<>("Error: Invalid Token !"));
+                return ResponseEntity.ok(new ApiResponse<>(currentUser));
+            }
+            else
+                return ResponseEntity
+                        .badRequest()
+                        .body(new ApiResponse<>("Error: Invalid Token !"));
+        } catch(Exception e) {
+            return ResponseEntity.badRequest().body(new ApiResponse<>(e.getMessage()));}
     }
 
     @PostMapping("client/refresh-token")
     public ResponseEntity<ApiResponse<?>> clientRefresh(@RequestBody TokenRequest tokenRequest) {
 
-        String accessToken = tokenRequest.getToken();
+        try{
+            String accessToken = tokenRequest.getToken();
 
-        String email = jwtUtils.getEmailFromJwtToken(accessToken);
+            String email = jwtUtils.getEmailFromJwtToken(accessToken);
 
-        if (clientRepository.existsByEmail(email)) {
-            Client currentClient = clientRepository.findByEmail(email).get();
-            return ResponseEntity.ok(new ApiResponse<>(new TokenResponse(jwtUtils.generateAccessToken(currentClient.getEmail()))));
-        }
-        else
-            return ResponseEntity
-                    .badRequest()
-                    .body(new ApiResponse<>("Invalid Token !"));
+            if (clientRepository.existsByEmail(email)) {
+                Client currentClient = clientRepository.findByEmail(email).get();
+                return ResponseEntity.ok(new ApiResponse<>(new TokenResponse(jwtUtils.generateAccessToken(currentClient.getEmail()))));
+            }
+            else
+                return ResponseEntity
+                        .badRequest()
+                        .body(new ApiResponse<>("Invalid Token !"));
+        } catch(Exception e) {
+            return ResponseEntity.badRequest().body(new ApiResponse<>(e.getMessage()));}
     }
 }

@@ -102,52 +102,61 @@ public class ClientController {
             , @RequestParam(required = false) Integer pageLength
             , @RequestParam(required = false) String search
     ) {
-        UserDetailsImpl userDetails = authService.getInfo();
+        try{
+            UserDetailsImpl userDetails = authService.getInfo();
 
-        if(pageNum != null) {
-            if(userDetails.getRole().equals(Role.admin) || userDetails.getRole().equals(Role.client))
-                return ResponseEntity.ok(new ApiResponse<>(clientService.getPage(pageNum, pageLength, search)));
-        } else {
-            if(userDetails.getRole().equals((Role.admin)) || userDetails.getRole().equals(Role.client))
-                return ResponseEntity.ok(new ApiResponse<>(clientService.getAll()));
-        }
-        return ResponseEntity.badRequest().body(new ApiResponse<>("You don't have permission to do this Action"));
+            if(pageNum != null) {
+                if(userDetails.getRole().equals(Role.admin) || userDetails.getRole().equals(Role.client))
+                    return ResponseEntity.ok(new ApiResponse<>(clientService.getPage(pageNum, pageLength, search)));
+            } else {
+                if(userDetails.getRole().equals((Role.admin)) || userDetails.getRole().equals(Role.client))
+                    return ResponseEntity.ok(new ApiResponse<>(clientService.getAll()));
+            }
+            return ResponseEntity.badRequest().body(new ApiResponse<>("You don't have permission to do this Action"));
+        } catch(Exception e) {
+            return ResponseEntity.badRequest().body(new ApiResponse<>(e.getMessage()));}
     }
 
     @Operation(summary = "Get Client",
             description = "Get Client on the web application", tags = { "Client Management" })
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<?>> getClient(@PathVariable Integer id) {
-        UserDetailsImpl userDetails = authService.getInfo();
-        if(userDetails.getRole().equals(Role.admin) || userDetails.getRole().equals(Role.client))
-            return ResponseEntity.ok(new ApiResponse<>(clientService.get(id)));
-        return ResponseEntity.badRequest().body(new ApiResponse<>("You don't have permission to do this Action"));
+        try{
+            UserDetailsImpl userDetails = authService.getInfo();
+            if(userDetails.getRole().equals(Role.admin) || userDetails.getRole().equals(Role.client))
+                return ResponseEntity.ok(new ApiResponse<>(clientService.get(id)));
+            return ResponseEntity.badRequest().body(new ApiResponse<>("You don't have permission to do this Action"));
+        } catch(Exception e) {
+            return ResponseEntity.badRequest().body(new ApiResponse<>(e.getMessage()));}
     }
 
     @Operation(summary = "Get Site and Event",
             description = "Get Site list and Latest Events for Client", tags = { "Client Management" })
     @GetMapping("/dashboard")
     public ResponseEntity<ApiResponse<?>> getDashboard() {
-        UserDetailsImpl userDetails = authService.getInfo();
-        if(userDetails.getRole().equals(Role.client))
-        {
-            Integer clientId = userDetails.getId();
-            List<Site> siteList = siteRepository.findAllByClientId(clientId);
-            List<SiteWithHitpoint> siteWithHitpointList = new ArrayList<>();  
-
-            List<Integer> siteIdList = new ArrayList<>();
-            for(Site site : siteList)
+        try{
+            UserDetailsImpl userDetails = authService.getInfo();
+            if(userDetails.getRole().equals(Role.client))
             {
-                siteIdList.add(site.getId());
-                siteWithHitpointList.add(siteService.getFull(site.getId()));
-            }
+                Integer clientId = userDetails.getId();
+                List<Site> siteList = siteRepository.findAllByClientId(clientId);
+                List<SiteWithHitpoint> siteWithHitpointList = new ArrayList<>();  
 
-            ClientDashboardResponse clientDashboardResponse = new ClientDashboardResponse();
-            clientDashboardResponse.setSiteList(siteWithHitpointList);
-            clientDashboardResponse.setEventList(eventRepository.findTop100BySiteIdInOrderByTimestampDesc(siteIdList));
-            
-            return ResponseEntity.ok(new ApiResponse<>(clientDashboardResponse));
-        }
-        return ResponseEntity.badRequest().body(new ApiResponse<>("You don't have permission to do this Action"));
+                List<Integer> siteIdList = new ArrayList<>();
+                for(Site site : siteList)
+                {
+                    siteIdList.add(site.getId());
+                    siteWithHitpointList.add(siteService.getFull(site.getId()));
+                }
+
+                ClientDashboardResponse clientDashboardResponse = new ClientDashboardResponse();
+                clientDashboardResponse.setSiteList(siteWithHitpointList);
+                clientDashboardResponse.setEventList(eventRepository.findTop100BySiteIdInOrderByTimestampDesc(siteIdList));
+                
+                return ResponseEntity.ok(new ApiResponse<>(clientDashboardResponse));
+            }
+            return ResponseEntity.badRequest().body(new ApiResponse<>("You don't have permission to do this Action"));
+        } catch(Exception e) {
+            return ResponseEntity.badRequest().body(new ApiResponse<>(e.getMessage()));}
     }
 }

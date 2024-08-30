@@ -49,40 +49,43 @@ public class UserController {
             , @RequestParam(required = false) Integer pageLength
             , @RequestParam(required = false) String search
     ) {
-        UserDetailsImpl userDetails = authService.getInfo();
+        try{
+            UserDetailsImpl userDetails = authService.getInfo();
 
-        if(pageNum != null) {
-            if(userDetails.getRole().equals(Role.admin))
-                return ResponseEntity.ok(new ApiResponse<>(userService.getPage(pageNum, pageLength, search)));
-        } else if( chat != null) {
-            if(category != null) {
-                if(!userDetails.getRole().equals(Role.guard) && !userDetails.getRole().equals(Role.client))
-                    return ResponseEntity.ok(new ApiResponse<>(userService.getChatUsersWithRole(userDetails.getId(), category)));
-                else if(userDetails.getRole().equals(Role.guard))
-                    return ResponseEntity.ok(new ApiResponse<>(userService.getChatUsersForGuardsWithRole(userDetails.getId(),category)));
-                else if(userDetails.getRole().equals(Role.client))
-                    return ResponseEntity.ok(new ApiResponse<>(userService.getChatUsersForClientsWithRole(userDetails.getId(),category)));
+            if(pageNum != null) {
+                if(userDetails.getRole().equals(Role.admin))
+                    return ResponseEntity.ok(new ApiResponse<>(userService.getPage(pageNum, pageLength, search)));
+            } else if( chat != null) {
+                if(category != null) {
+                    if(!userDetails.getRole().equals(Role.guard) && !userDetails.getRole().equals(Role.client))
+                        return ResponseEntity.ok(new ApiResponse<>(userService.getChatUsersWithRole(userDetails.getId(), category)));
+                    else if(userDetails.getRole().equals(Role.guard))
+                        return ResponseEntity.ok(new ApiResponse<>(userService.getChatUsersForGuardsWithRole(userDetails.getId(),category)));
+                    else if(userDetails.getRole().equals(Role.client))
+                        return ResponseEntity.ok(new ApiResponse<>(userService.getChatUsersForClientsWithRole(userDetails.getId(),category)));
+                }
+                else {
+                    if(!userDetails.getRole().equals(Role.guard) && !userDetails.getRole().equals(Role.client))
+                        return ResponseEntity.ok(new ApiResponse<>(userService.getChatUsersForStaff(userDetails.getId())));
+                    else if(userDetails.getRole().equals(Role.guard))
+                        return ResponseEntity.ok(new ApiResponse<>(userService.getChatUsersForGuards(userDetails.getId())));
+                    else if(userDetails.getRole().equals(Role.client))
+                        return ResponseEntity.ok(new ApiResponse<>(userService.getChatUsersForClients(userDetails.getId())));
+                }
+            } else if( role != null) {
+                if(userDetails.getRole().equals(Role.client) || userDetails.getRole().equals(Role.admin))
+                    return ResponseEntity.ok(new ApiResponse<>(userService.getAreaManagers()));
+            } else if( email != null) {
+                if(userDetails.getRole().equals(Role.admin)) {
+                    return ResponseEntity.ok(new ApiResponse<>(userService.getByEmail(email)));
+                }
+            } else {
+                if(userDetails.getRole().equals((Role.admin)))
+                    return ResponseEntity.ok(new ApiResponse<>(userService.getAll()));
             }
-            else {
-                if(!userDetails.getRole().equals(Role.guard) && !userDetails.getRole().equals(Role.client))
-                    return ResponseEntity.ok(new ApiResponse<>(userService.getChatUsersForStaff(userDetails.getId())));
-                else if(userDetails.getRole().equals(Role.guard))
-                    return ResponseEntity.ok(new ApiResponse<>(userService.getChatUsersForGuards(userDetails.getId())));
-                else if(userDetails.getRole().equals(Role.client))
-                    return ResponseEntity.ok(new ApiResponse<>(userService.getChatUsersForClients(userDetails.getId())));
-            }
-        } else if( role != null) {
-            if(userDetails.getRole().equals(Role.client) || userDetails.getRole().equals(Role.admin))
-                return ResponseEntity.ok(new ApiResponse<>(userService.getAreaManagers()));
-        } else if( email != null) {
-            if(userDetails.getRole().equals(Role.admin)) {
-                return ResponseEntity.ok(new ApiResponse<>(userService.getByEmail(email)));
-            }
-        } else {
-            if(userDetails.getRole().equals((Role.admin)))
-                return ResponseEntity.ok(new ApiResponse<>(userService.getAll()));
-        }
-        return ResponseEntity.badRequest().body(new ApiResponse<>("You don't have permission to do this Action"));
+            return ResponseEntity.badRequest().body(new ApiResponse<>("You don't have permission to do this Action"));
+        } catch(Exception e) {
+            return ResponseEntity.badRequest().body(new ApiResponse<>(e.getMessage()));}
     }
 
     @Operation(summary = "Get User", description = "Get user from the server (Only Staff)", tags = { "User Management" })
@@ -90,11 +93,14 @@ public class UserController {
     public ResponseEntity<ApiResponse<?>> getOne(
             @PathVariable Integer id
     ) {
-        UserDetailsImpl userDetails = authService.getInfo();
+        try{
+            UserDetailsImpl userDetails = authService.getInfo();
 
-        if(userDetails.getRole().equals(Role.admin) || userDetails.getRole().equals(Role.branch) || userDetails.getRole().equals(Role.area))
-            return ResponseEntity.ok(new ApiResponse<>(userService.get(id)));
-        return ResponseEntity.badRequest().body(new ApiResponse<>("You don't have permission to do this Action"));
+            if(userDetails.getRole().equals(Role.admin) || userDetails.getRole().equals(Role.branch) || userDetails.getRole().equals(Role.area))
+                return ResponseEntity.ok(new ApiResponse<>(userService.get(id)));
+            return ResponseEntity.badRequest().body(new ApiResponse<>("You don't have permission to do this Action"));
+        } catch(Exception e) {
+            return ResponseEntity.badRequest().body(new ApiResponse<>(e.getMessage()));}
     }
 
     @Operation(summary = "Delete User", description = "Delete user By User Id (Only Admin)", tags = { "User Management" })

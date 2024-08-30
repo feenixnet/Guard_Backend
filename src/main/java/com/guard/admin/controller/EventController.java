@@ -50,20 +50,20 @@ public class EventController {
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate,
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate 
     ) {
-        System.out.println(startDate);
-        System.out.println(endDate);
-
-        UserDetailsImpl userDetails = authService.getInfo();
-        if(!userDetails.getRole().equals(Role.guard)) {
-            if(siteId != null)
-                return ResponseEntity.ok(new ApiResponse<>(eventService.getPage(siteId,null, null,null,  pageNum, pageSize, search, startDate, endDate)));
-            else if(userDetails.getRole().equals(Role.admin))
-                return ResponseEntity.ok(new ApiResponse<>(eventService.getPage(null, null,null, null, pageNum, pageSize, search, startDate, endDate)));
-            else if(userDetails.getRole().equals(Role.client))
-            return ResponseEntity.ok(new ApiResponse<>(eventService.getPage(null, null,userDetails.getId(), null, pageNum, pageSize, search,  startDate, endDate)));
-            else return ResponseEntity.ok(new ApiResponse<>(eventService.getPage(null, userDetails.getId(),null, null, pageNum, pageSize, search,  startDate, endDate)));
-        } else {
-            return ResponseEntity.ok(new ApiResponse<>(eventService.getPage(null, null , userDetails.getId(),null, pageNum, pageSize, search,  startDate, endDate)));
-        }
+        try{
+            UserDetailsImpl userDetails = authService.getInfo();
+            if(!userDetails.getRole().equals(Role.guard)) {
+                if(siteId != null)
+                    return ResponseEntity.ok(new ApiResponse<>(eventService.getPage(siteId,null, null,null,  pageNum, pageSize, search, startDate, endDate)));
+                else if(userDetails.getRole().equals(Role.admin))
+                    return ResponseEntity.ok(new ApiResponse<>(eventService.getPage(null, null,null, null, pageNum, pageSize, search, startDate, endDate)));
+                else if(userDetails.getRole().equals(Role.client))
+                return ResponseEntity.ok(new ApiResponse<>(eventService.getPage(null, null,userDetails.getId(), null, pageNum, pageSize, search,  startDate, endDate)));
+                else return ResponseEntity.ok(new ApiResponse<>(eventService.getPage(null, userDetails.getId(),null, null, pageNum, pageSize, search,  startDate, endDate)));
+            } else {
+                return ResponseEntity.ok(new ApiResponse<>(eventService.getPage(null, null , userDetails.getId(),null, pageNum, pageSize, search,  startDate, endDate)));
+            }
+        } catch(Exception e) {
+            return ResponseEntity.badRequest().body(new ApiResponse<>(e.getMessage()));}
     }
 }

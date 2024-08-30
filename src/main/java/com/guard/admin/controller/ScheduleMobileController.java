@@ -36,57 +36,58 @@ public class ScheduleMobileController {
             , @RequestParam(required = false) String startTime
             , @RequestParam(required = false) String endTime
             ) {
-        System.out.println("Hello");
-        System.out.println("Hello!" + startTime + endTime);
+        try{
 
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 
-        UserDetailsImpl userDetails = authService.getInfo();
+            UserDetailsImpl userDetails = authService.getInfo();
 
-        System.out.println(userDetails.getRole());
+            System.out.println(userDetails.getRole());
 
-        if(userDetails.getRole().equals(Role.admin) || userDetails.getRole().equals(Role.client) || userDetails.getRole().equals(Role.branch) || userDetails.getRole().equals(Role.area)) {
-            System.out.println("OKDDDD");
-            System.out.println(carId);
-            List<Appointment> appointmentList = new ArrayList<>();
-            List<ScheduleMobile> scheduleMobileList = new ArrayList<>();
-            if(carId != null){
-                scheduleMobileList = scheduleMobileService.planForManager(userDetails.getRole(), carId);
+            if(userDetails.getRole().equals(Role.admin) || userDetails.getRole().equals(Role.client) || userDetails.getRole().equals(Role.branch) || userDetails.getRole().equals(Role.area)) {
+                System.out.println("OKDDDD");
+                System.out.println(carId);
+                List<Appointment> appointmentList = new ArrayList<>();
+                List<ScheduleMobile> scheduleMobileList = new ArrayList<>();
+                if(carId != null){
+                    scheduleMobileList = scheduleMobileService.planForManager(userDetails.getRole(), carId);
+                }
+                    
+                else {
+                    if(userDetails.getRole().equals(Role.admin))
+                        scheduleMobileList = scheduleMobileService.findAll();
+                    return ResponseEntity.badRequest().body(new ApiResponse<>("You don't have permission to do this Action!"));
+                }
+
+                for(ScheduleMobile scheduleMobile : scheduleMobileList) {
+                    Appointment appointment = new Appointment();
+                    appointment.setText(scheduleMobile.getGuard().getFirstname() + scheduleMobile.getGuard().getLastname());
+                    appointment.setStartDate(scheduleMobile.getStartTime());
+                    appointment.setEndDate(scheduleMobile.getEndTime());
+                    // appointment.setDescription(schedule.getRule());
+                    appointment.setGuardId(scheduleMobile.getGuard().getId());
+                    appointment.setFrequency(scheduleMobile.getFrequency());
+                    appointment.setHours(scheduleMobile.getHours());
+                    appointment.setAnnounces(scheduleMobile.getAnnounces());
+                    appointmentList.add(appointment);
+                }
+                return ResponseEntity.ok(new ApiResponse<>(appointmentList));
             }
-                
-            else {
-                if(userDetails.getRole().equals(Role.admin))
-                    scheduleMobileList = scheduleMobileService.findAll();
-                return ResponseEntity.badRequest().body(new ApiResponse<>("You don't have permission to do this Action!"));
+            else if(userDetails.getRole().equals(Role.guard) && startTime != null && endTime != null) {
+                try {
+                    return ResponseEntity.ok(new ApiResponse<>(scheduleMobileService.planForGuard(userDetails.getId(), formatter.parse(startTime), formatter.parse(endTime))));
+                } catch (ParseException e) {
+                    System.out.println("Hello!" + e);
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                    return ResponseEntity.badRequest().body(new ApiResponse<>("You don't have permission to do this Action!"));
+                    
+                }
             }
 
-            for(ScheduleMobile scheduleMobile : scheduleMobileList) {
-                Appointment appointment = new Appointment();
-                appointment.setText(scheduleMobile.getGuard().getFirstname() + scheduleMobile.getGuard().getLastname());
-                appointment.setStartDate(scheduleMobile.getStartTime());
-                appointment.setEndDate(scheduleMobile.getEndTime());
-                // appointment.setDescription(schedule.getRule());
-                appointment.setGuardId(scheduleMobile.getGuard().getId());
-                appointment.setFrequency(scheduleMobile.getFrequency());
-                appointment.setHours(scheduleMobile.getHours());
-                appointment.setAnnounces(scheduleMobile.getAnnounces());
-                appointmentList.add(appointment);
-            }
-            return ResponseEntity.ok(new ApiResponse<>(appointmentList));
-        }
-        else if(userDetails.getRole().equals(Role.guard) && startTime != null && endTime != null) {
-            try {
-                return ResponseEntity.ok(new ApiResponse<>(scheduleMobileService.planForGuard(userDetails.getId(), formatter.parse(startTime), formatter.parse(endTime))));
-            } catch (ParseException e) {
-                System.out.println("Hello!" + e);
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-                return ResponseEntity.badRequest().body(new ApiResponse<>("You don't have permission to do this Action!"));
-                
-            }
-        }
-
-        return ResponseEntity.badRequest().body(new ApiResponse<>("You don't have permission to do this Action!"));
+            return ResponseEntity.badRequest().body(new ApiResponse<>("You don't have permission to do this Action!"));
+        } catch(Exception e) {
+            return ResponseEntity.badRequest().body(new ApiResponse<>(e.getMessage()));}
     }
 
     @Operation(summary = "Update Schedule(Mobile)",

@@ -92,23 +92,26 @@ public class GuardController {
             , @RequestParam(required = false) Integer pageLength
             , @RequestParam(required = false) String search
     ) {
-        UserDetailsImpl userDetails = authService.getInfo();
-        if (pageNum != null) {
-            if (userDetails.getRole().equals(Role.admin))
-                return ResponseEntity.ok(new ApiResponse<>(guardService.getPage(pageNum, pageLength, search)));
-        } else if (siteId != null) {
-            if (userDetails.getRole().equals(Role.client))
-                return ResponseEntity.ok(new ApiResponse<>(guardService.getBySiteId(siteId)));
-        } else if (type != null) {
-            if (userDetails.getRole().equals(Role.admin) || userDetails.getRole().equals(Role.area) || userDetails.getRole().equals(Role.dispatch))
-                return ResponseEntity.ok(new ApiResponse<>(guardService.getByType(type)));
-        } else {
-            if (userDetails.getRole().equals(Role.admin) || userDetails.getRole().equals(Role.client))
-                return ResponseEntity.ok(new ApiResponse<>(guardService.getAll()));
-            else if (userDetails.getRole().equals(Role.branch) || userDetails.getRole().equals(Role.area))
-                return ResponseEntity.ok(new ApiResponse<>(guardService.getByUserId(userDetails.getId())));
-        }
-        return ResponseEntity.badRequest().body(new ApiResponse<>("You don't have permission to do this Action"));
+        try{
+            UserDetailsImpl userDetails = authService.getInfo();
+            if (pageNum != null) {
+                if (userDetails.getRole().equals(Role.admin))
+                    return ResponseEntity.ok(new ApiResponse<>(guardService.getPage(pageNum, pageLength, search)));
+            } else if (siteId != null) {
+                if (userDetails.getRole().equals(Role.client))
+                    return ResponseEntity.ok(new ApiResponse<>(guardService.getBySiteId(siteId)));
+            } else if (type != null) {
+                if (userDetails.getRole().equals(Role.admin) || userDetails.getRole().equals(Role.area) || userDetails.getRole().equals(Role.dispatch))
+                    return ResponseEntity.ok(new ApiResponse<>(guardService.getByType(type)));
+            } else {
+                if (userDetails.getRole().equals(Role.admin) || userDetails.getRole().equals(Role.client))
+                    return ResponseEntity.ok(new ApiResponse<>(guardService.getAll()));
+                else if (userDetails.getRole().equals(Role.branch) || userDetails.getRole().equals(Role.area))
+                    return ResponseEntity.ok(new ApiResponse<>(guardService.getByUserId(userDetails.getId())));
+            }
+            return ResponseEntity.badRequest().body(new ApiResponse<>("You don't have permission to do this Action"));
+        } catch(Exception e) {
+            return ResponseEntity.badRequest().body(new ApiResponse<>(e.getMessage()));}
     }
 
     @Operation(summary = "Get Guard",
@@ -117,9 +120,12 @@ public class GuardController {
     public ResponseEntity<ApiResponse<?>> getOne(
             @PathVariable Integer id
     ) {
-        UserDetailsImpl userDetails = authService.getInfo();
-        if (userDetails.getRole().equals(Role.admin))
-            return ResponseEntity.ok(new ApiResponse<>(guardService.get(id)));
-        return ResponseEntity.badRequest().body(new ApiResponse<>("You don't have permission to do this Action"));
+        try{
+            UserDetailsImpl userDetails = authService.getInfo();
+            if (userDetails.getRole().equals(Role.admin))
+                return ResponseEntity.ok(new ApiResponse<>(guardService.get(id)));
+            return ResponseEntity.badRequest().body(new ApiResponse<>("You don't have permission to do this Action"));
+        } catch(Exception e) {
+            return ResponseEntity.badRequest().body(new ApiResponse<>(e.getMessage()));}
     }
 }

@@ -338,8 +338,11 @@ public class SiteController {
         , @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate
         , @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate 
     ) {
-        return ResponseEntity
-                .ok(new ApiResponse<>(visitorService.getPage(siteId, null, pageNum, pageSize, search, startDate, endDate)));
+        try{
+            return ResponseEntity.ok(new ApiResponse<>(visitorService.getPage(siteId, null, pageNum, pageSize, search, startDate, endDate)));
+        } catch(Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }   
 
         // try{
         //     // UserDetailsImpl userDetails = authService.getInfo();
@@ -365,9 +368,11 @@ public class SiteController {
         , @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate
         , @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate 
     ) {
-        return ResponseEntity
-                .ok(new ApiResponse<>(photoService.getPage(siteId, null, pageNum, pageSize, search, startDate, endDate)));
-        
+        try{
+            return ResponseEntity.ok(new ApiResponse<>(photoService.getPage(siteId, null, pageNum, pageSize, search, startDate, endDate)));
+        } catch(Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        } 
         // try{
         //     // UserDetailsImpl userDetails = authService.getInfo();
         //     List<Visitor> visitorList = visitorRepository.findBySiteId(siteId);   
@@ -425,16 +430,20 @@ public class SiteController {
         , @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate
         , @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate 
     ) {
-        UserDetailsImpl userDetails = authService.getInfo();
-        if (userDetails.getRole().equals(Role.admin)) {
-            return ResponseEntity
-                    .ok(new ApiResponse<>(reportService.getPage(siteId, null, pageNum, pageSize, search, startDate, endDate, null)));
-        } else if (userDetails.getRole().equals(Role.client)) {
-            Integer clientId = userDetails.getId();
-            if (clientId == siteRepository.findById(siteId).get().getClient().getId()) {
-                return ResponseEntity.ok(
-                        new ApiResponse<>(reportService.getPage(siteId, null, pageNum, pageSize, search, startDate, endDate, clientId)));
+        try{
+            UserDetailsImpl userDetails = authService.getInfo();
+            if (userDetails.getRole().equals(Role.admin)) {
+                return ResponseEntity
+                        .ok(new ApiResponse<>(reportService.getPage(siteId, null, pageNum, pageSize, search, startDate, endDate, null)));
+            } else if (userDetails.getRole().equals(Role.client)) {
+                Integer clientId = userDetails.getId();
+                if (clientId == siteRepository.findById(siteId).get().getClient().getId()) {
+                    return ResponseEntity.ok(
+                            new ApiResponse<>(reportService.getPage(siteId, null, pageNum, pageSize, search, startDate, endDate, clientId)));
+                }
             }
+        } catch(Exception e) {
+            return ResponseEntity.badRequest().body(new ApiResponse<>(e.getMessage()));
         }
         // if(!userDetails.getRole().equals(Role.guard)) {
         // if(siteId != null)

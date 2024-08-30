@@ -30,10 +30,13 @@ public class CarController {
             description = "Get Car on the web application", tags = { "Car Management" })
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<?>> get(@PathVariable Integer id) {
-        UserDetailsImpl userDetails = authService.getInfo();
-        if(userDetails.getRole().equals(Role.admin) || userDetails.getRole().equals(Role.branch))
-            return ResponseEntity.ok(new ApiResponse<>(carService.get(id)));
-        return ResponseEntity.badRequest().body(new ApiResponse<>("You don't have permission to do this Action"));
+        try{
+            UserDetailsImpl userDetails = authService.getInfo();
+            if(userDetails.getRole().equals(Role.admin) || userDetails.getRole().equals(Role.branch))
+                return ResponseEntity.ok(new ApiResponse<>(carService.get(id)));
+            return ResponseEntity.badRequest().body(new ApiResponse<>("You don't have permission to do this Action"));
+        } catch(Exception e) {
+            return ResponseEntity.badRequest().body(new ApiResponse<>(e.getMessage()));}
     }
 
     @Operation(summary = "Create Car",
@@ -96,20 +99,23 @@ public class CarController {
             , @RequestParam(required = false) Integer pageLength
             , @RequestParam(required = false) String search
     ) {
-        UserDetailsImpl userDetails = authService.getInfo();
+        try{
+            UserDetailsImpl userDetails = authService.getInfo();
 
-        if(pageNum != null) {
-            if(userDetails.getRole().equals(Role.admin) || userDetails.getRole().equals(Role.branch)
-            || userDetails.getRole().equals(Role.area) || userDetails.getRole().equals(Role.dispatch)
-            )
-                return ResponseEntity.ok(new ApiResponse<>(carService.getPage(pageNum, pageLength, search)));
-        } else {
-            if(userDetails.getRole().equals(Role.admin) || userDetails.getRole().equals(Role.branch)
-            || userDetails.getRole().equals(Role.area) || userDetails.getRole().equals(Role.dispatch)
-            )
-                return ResponseEntity.ok(new ApiResponse<>(carService.getAll()));
-        }
-        return ResponseEntity.badRequest().body(new ApiResponse<>("You don't have permission to do this Action"));
+            if(pageNum != null) {
+                if(userDetails.getRole().equals(Role.admin) || userDetails.getRole().equals(Role.branch)
+                || userDetails.getRole().equals(Role.area) || userDetails.getRole().equals(Role.dispatch)
+                )
+                    return ResponseEntity.ok(new ApiResponse<>(carService.getPage(pageNum, pageLength, search)));
+            } else {
+                if(userDetails.getRole().equals(Role.admin) || userDetails.getRole().equals(Role.branch)
+                || userDetails.getRole().equals(Role.area) || userDetails.getRole().equals(Role.dispatch)
+                )
+                    return ResponseEntity.ok(new ApiResponse<>(carService.getAll()));
+            }
+            return ResponseEntity.badRequest().body(new ApiResponse<>("You don't have permission to do this Action"));
+        } catch(Exception e) {
+            return ResponseEntity.badRequest().body(new ApiResponse<>(e.getMessage()));}
     }
 
     
@@ -117,13 +123,16 @@ public class CarController {
             description = "Get Sites associating car on the web application", tags = { "Car Management" })
     @GetMapping("/sites/{id}")
     public ResponseEntity<ApiResponse<?>> getSites(@PathVariable Integer id) {
-        UserDetailsImpl userDetails = authService.getInfo();
-        System.out.println(id);
-        try {
-            return ResponseEntity.ok(new ApiResponse<>(carService.getSites(id)));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(new ApiResponse<>(e.getMessage()));
-        }
+        try{
+            UserDetailsImpl userDetails = authService.getInfo();
+            System.out.println(id);
+            try {
+                return ResponseEntity.ok(new ApiResponse<>(carService.getSites(id)));
+            } catch (Exception e) {
+                return ResponseEntity.badRequest().body(new ApiResponse<>(e.getMessage()));
+            }
+        } catch(Exception e) {
+            return ResponseEntity.badRequest().body(new ApiResponse<>(e.getMessage()));}
     }
 
 
