@@ -232,7 +232,7 @@ public class GuardServiceImpl implements GuardService {
                             criteriaBuilder.like(criteriaBuilder.lower(root.get("firstname")), likePattern.toLowerCase()),
                             criteriaBuilder.like(criteriaBuilder.lower(root.get("lastname")), likePattern.toLowerCase()),
                             criteriaBuilder.like(criteriaBuilder.lower(root.get("email")), likePattern.toLowerCase()),
-                            criteriaBuilder.like(criteriaBuilder.lower(root.get("address")), likePattern.toLowerCase()),
+                            // criteriaBuilder.like(criteriaBuilder.lower(root.get("address")), likePattern.toLowerCase()),
                             criteriaBuilder.like(criteriaBuilder.lower(root.get("gender")), likePattern.toLowerCase())
                     ));
                 }
