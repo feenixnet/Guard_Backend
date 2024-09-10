@@ -38,9 +38,9 @@ public interface SiteService {
 
     DataTableResponse<SiteWithHitpoint> getPage(Integer pageNum, Integer pageLength, String search, UserDetailsImpl userDetail) ;
 
-    Area createArea(Area area);;
-    List<Area> getAllArea();;
-    void deleteArea(Integer id);;
+    Area createArea(Area area);
+    List<Area> getAllArea();
+    void deleteArea(Integer id);
     Area updateArea(Area area);
 ;
     void changeCar(AreaCarRequest arCar) ;

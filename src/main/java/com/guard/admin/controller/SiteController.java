@@ -281,11 +281,20 @@ public class SiteController {
     public ResponseEntity<List<Photo>> getImages(@PathVariable Integer siteId) {
         try{
             // UserDetailsImpl userDetails = authService.getInfo();
-            List<Photo> photoList = photoRepository.findBySiteId(siteId);   
-            for(Photo photo : photoList){
-                photo.setSite(null);
-            }         
-            return new ResponseEntity<>(photoList, HttpStatus.OK);
+            List<Photo> photoList = photoRepository.findBySiteId(siteId); 
+            List<Photo> photoListWihtoutSign = new ArrayList();
+            System.out.println(photoList.size());
+            for(int i = 0; i < photoList.size(); i ++ ) {
+                if(photoList.get(i).getUrl().contains("Tsignature") == false) {
+                    System.out.println("True");
+                    photoListWihtoutSign.add(photoList.get(i));
+                }
+            }  
+            System.out.println(photoListWihtoutSign.size());
+            // for(Photo photo : photoList){
+            //     photo.setSite(null);
+            // }         
+            return new ResponseEntity<>(photoListWihtoutSign, HttpStatus.OK);
         } catch(Exception e) {
             System.out.println(e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
